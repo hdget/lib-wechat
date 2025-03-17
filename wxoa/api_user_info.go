@@ -3,9 +3,24 @@ package wxoa
 import (
 	"fmt"
 	"github.com/go-resty/resty/v2"
-	"github.com/hdget/lib-wechat/wxoa/types"
+	"github.com/hdget/lib-wechat/api"
 	"github.com/pkg/errors"
 )
+
+type UserInfoResult struct {
+	api.Result
+	Subscribe      int8   `json:"subscribe"`
+	Openid         string `json:"openid"`
+	Language       string `json:"language"`
+	SubscribeTime  int64  `json:"subscribe_time"`
+	UnionId        string `json:"unionid"`
+	Remark         string `json:"remark"`
+	GroupId        int    `json:"groupid"`
+	TagIdList      []int  `json:"tagid_list"`
+	SubscribeScene string `json:"subscribe_scene"`
+	QrScene        int    `json:"qr_scene"`
+	QrSceneStr     string `json:"qr_scene_str"`
+}
 
 const (
 	//https://developers.weixin.qq.com/doc/offiaccount/User_Management/Get_users_basic_information_UnionID.html#UinonId
@@ -13,7 +28,7 @@ const (
 )
 
 // GetUserInfo 通过openId获取用户信息
-func (impl *wxoaImpl) GetUserInfo(openid string) (*types.UserInfoResult, error) {
+func (impl *wxoaImpl) GetUserInfo(openid string) (*UserInfoResult, error) {
 	accessToken, err := impl.GetAccessToken()
 	if err != nil {
 		return nil, errors.Wrap(err, "get access token")
@@ -25,7 +40,7 @@ func (impl *wxoaImpl) GetUserInfo(openid string) (*types.UserInfoResult, error) 
 		return nil, errors.Wrapf(err, "get wxoa user info, appId: %s", impl.AppId)
 	}
 
-	var result types.UserInfoResult
+	var result UserInfoResult
 	err = impl.ParseApiResult(resp.Body(), &result)
 	if err != nil {
 		return nil, err

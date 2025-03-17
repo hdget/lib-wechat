@@ -20,6 +20,6 @@ func (m *UnSubscribedScanEventMessage) Reply() ([]byte, error) {
 	return m.ReplyText(fmt.Sprintf("未关注用户扫码, message: %+v", m))
 }
 
-func (m *UnSubscribedScanEventMessage) GetKind() Kind {
-	return KindEventUnSubscribedScan
+func (m *UnSubscribedScanEventMessage) GetKind() MessageKind {
+	return MessageKindEventUnSubscribedScan
 }

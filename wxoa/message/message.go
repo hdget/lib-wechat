@@ -6,30 +6,30 @@ import (
 
 type Messager interface {
 	Reply() ([]byte, error)
-	GetKind() Kind
+	GetKind() MessageKind
 	GetMessage() *Message
 }
 
-type Handler func(Messager) ([]byte, error)
+type MessageHandler func(Messager) ([]byte, error)
 
-type Kind int
+type MessageKind int
 
 const (
-	KindUnknown               Kind = iota
-	KindNormalText                 // 文字消息
-	KindNormalImage                // 图片消息
-	KindNormalVoice                // 语音消息
-	KindNormalVideo                // 视频消息
-	KindNormalShortVideo           // 短视频消息
-	KindNormalLocation             // 地理位置消息
-	KindNormalLink                 // 链接消息
-	KindEventSubscribe             // 订阅事件
-	KindEventUnSubscribe           // 取消订阅事件
-	KindEventUnSubscribedScan      // 未关注用户扫码事件
-	KindEventSubscribedScan        // 关注用户扫码事件
-	KindEventLocation              // 位置上报事件
-	KindEventClick                 // 点击事件
-	KindEventView                  // 跳转链接事件
+	MessageKindUnknown               MessageKind = iota
+	MessageKindNormalText                        // 文字消息
+	MessageKindNormalImage                       // 图片消息
+	MessageKindNormalVoice                       // 语音消息
+	MessageKindNormalVideo                       // 视频消息
+	MessageKindNormalShortVideo                  // 短视频消息
+	MessageKindNormalLocation                    // 地理位置消息
+	MessageKindNormalLink                        // 链接消息
+	MessageKindEventSubscribe                    // 订阅事件
+	MessageKindEventUnSubscribe                  // 取消订阅事件
+	MessageKindEventUnSubscribedScan             // 未关注用户扫码事件
+	MessageKindEventSubscribedScan               // 关注用户扫码事件
+	MessageKindEventLocation                     // 位置上报事件
+	MessageKindEventClick                        // 点击事件
+	MessageKindEventView                         // 跳转链接事件
 )
 
 type Message struct {

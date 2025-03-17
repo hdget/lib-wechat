@@ -12,6 +12,6 @@ func newShortVideoNormalMessage(msg *Message, data []byte) (Messager, error) {
 	return &ShortVideoNormalMessage{Message: msg}, nil
 }
 
-func (m *ShortVideoNormalMessage) GetKind() Kind {
-	return KindNormalShortVideo
+func (m *ShortVideoNormalMessage) GetKind() MessageKind {
+	return MessageKindNormalShortVideo
 }

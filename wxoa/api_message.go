@@ -7,7 +7,7 @@ import (
 
 var (
 	locker              sync.Mutex
-	_msgKind2msgHandler = map[message.Kind]message.Handler{}
+	_msgKind2msgHandler = map[message.MessageKind]message.MessageHandler{}
 )
 
 // HandleMessage 处理消息
@@ -23,7 +23,7 @@ func (impl *wxoaImpl) HandleMessage(data []byte) ([]byte, error) {
 	return m.Reply()
 }
 
-func RegisterMessageHandler(msgKind message.Kind, handler message.Handler) error {
+func RegisterMessageHandler(msgKind message.MessageKind, handler message.MessageHandler) error {
 	locker.Lock()
 	defer locker.Unlock()
 	_msgKind2msgHandler[msgKind] = handler

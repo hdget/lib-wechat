@@ -12,6 +12,6 @@ func newVoiceNormalMessage(msg *Message, data []byte) (Messager, error) {
 	return &VoiceNormalMessage{Message: msg}, nil
 }
 
-func (m *VoiceNormalMessage) GetKind() Kind {
-	return KindNormalVoice
+func (m *VoiceNormalMessage) GetKind() MessageKind {
+	return MessageKindNormalVoice
 }
