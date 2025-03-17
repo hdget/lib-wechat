@@ -1,6 +1,10 @@
 package wxmp
 
+import "github.com/hdget/lib-wechat/api"
+
 type ApiWxmp interface {
+	api.ApiCommon
+
 	/*
 	 * 通过code换取openid和unionid
 	 *

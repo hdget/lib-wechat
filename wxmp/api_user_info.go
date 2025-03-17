@@ -36,14 +36,14 @@ type MobileInfo struct {
 
 // sessionResult wechat miniprogram login session
 type sessionResult struct {
-	api.Result
+	api.ApiResult
 	SessionKey string `json:"session_key"`
 	OpenId     string `json:"openid"`
 	UnionId    string `json:"unionid"`
 }
 
 type GetUserPhoneNumberResult struct {
-	api.Result
+	api.ApiResult
 	PhoneInfo MobileInfo `json:"phone_info"`
 }
 

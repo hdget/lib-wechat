@@ -5,7 +5,6 @@ go 1.23.7
 require (
 	github.com/go-resty/resty/v2 v2.16.5
 	github.com/hdget/common v0.0.5
-	github.com/hdget/sdk v0.0.5
 	github.com/hdget/utils v0.0.1
 	github.com/pkg/errors v0.9.1
 )

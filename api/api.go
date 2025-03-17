@@ -16,10 +16,14 @@ type Api struct {
 	Cache     Cache
 }
 
-// Result 微信的API结果
-type Result struct {
+// ApiResult 微信的API结果
+type ApiResult struct {
 	ErrCode int    `json:"errcode"`
 	ErrMsg  string `json:"errmsg"`
+}
+
+type ApiCommon interface {
+	GetAccessToken() (string, error)
 }
 
 func New(kind ApiKind, appId, appSecret string, providers ...intf.Provider) (*Api, error) {
@@ -46,7 +50,7 @@ func (a *Api) ParseApiResult(data []byte, result any) error {
 	err := json.Unmarshal(data, result)
 	if err != nil {
 		// 如果unmarshal错误,尝试解析错误信息
-		var ret Result
+		var ret ApiResult
 		_ = json.Unmarshal(data, &ret)
 
 		if ret.ErrCode != 0 {

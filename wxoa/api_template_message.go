@@ -32,7 +32,7 @@ type templateMessageRow struct {
 }
 
 type templateMessageSendResult struct {
-	api.Result
+	api.ApiResult
 	Msgid int `json:"msgid"`
 }
 
@@ -42,7 +42,7 @@ const (
 	networkTimeout         = 3 * time.Second
 )
 
-func NewTemplateMessage(toUser, templateId string, contents map[string]string) (*TemplateMessage, error) {
+func NewTemplateMessage(templateId string, contents map[string]string) *TemplateMessage {
 	rows := make(map[string]*templateMessageRow)
 	for k, v := range contents {
 		rows[k] = &templateMessageRow{
@@ -51,12 +51,10 @@ func NewTemplateMessage(toUser, templateId string, contents map[string]string) (
 		}
 	}
 
-	msg := &TemplateMessage{
-		ToUser:     toUser,
+	return &TemplateMessage{
 		TemplateId: templateId,
 		Data:       rows,
 	}
-	return msg, nil
 }
 
 // LinkUrl 链接外部URL

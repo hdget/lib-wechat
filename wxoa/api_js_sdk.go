@@ -12,7 +12,7 @@ import (
 
 // JsSdkSignatureResult signature接口返回结果
 type JsSdkSignatureResult struct {
-	api.Result
+	api.ApiResult
 	AppID     string `json:"appId"`
 	Ticket    string `json:"ticket"`
 	Noncestr  string `json:"noncestr"`
@@ -23,7 +23,7 @@ type JsSdkSignatureResult struct {
 
 // JsSdkTicketResult 类型
 type JsSdkTicketResult struct {
-	api.Result
+	api.ApiResult
 	Value     string `json:"ticket,omitempty"`
 	ExpiresIn int    `json:"expires_in,omitempty"`
 }

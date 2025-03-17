@@ -1,6 +1,9 @@
 package wxoa
 
+import "github.com/hdget/lib-wechat/api"
+
 type ApiWxoa interface {
+	api.ApiCommon
 	/*
 	 * 参考：Js SDK签名：https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/JS-SDK.html
 	 */
