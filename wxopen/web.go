@@ -3,12 +3,12 @@ package wxopen
 import (
 	"fmt"
 	"github.com/go-resty/resty/v2"
-	wechat "github.com/hdget/lib-wechat"
+	"github.com/hdget/lib-wechat/api"
 )
 
 // loginResult 类型
 type loginResult struct {
-	wechat.ApiError
+	api.Result
 	AccessToken  string `json:"access_token"`
 	ExpiresIn    int    `json:"expires_in"`
 	RefreshToken string `json:"refresh_token"`

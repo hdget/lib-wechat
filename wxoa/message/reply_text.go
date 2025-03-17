@@ -1,22 +1,22 @@
-package handler
+package message
 
 import (
 	"encoding/xml"
-	"github.com/hdget/lib-wechat/wxoa/reply"
 	"github.com/pkg/errors"
 	"time"
 )
 
-type ReceivedMessage struct {
+type TextReply struct {
 	XMLName      xml.Name `xml:"xml"`
 	ToUserName   string
 	FromUserName string
 	CreateTime   int64
 	MsgType      string
+	Content      string
 }
 
-func (m *ReceivedMessage) ReplyText(content string) ([]byte, error) {
-	reply := reply.Text{
+func (m *Message) ReplyText(content string) ([]byte, error) {
+	replyMsg := TextReply{
 		XMLName:      xml.Name{},
 		ToUserName:   m.FromUserName,
 		FromUserName: m.ToUserName,
@@ -25,9 +25,9 @@ func (m *ReceivedMessage) ReplyText(content string) ([]byte, error) {
 		Content:      content,
 	}
 
-	output, err := xml.MarshalIndent(reply, " ", " ")
+	output, err := xml.MarshalIndent(replyMsg, " ", " ")
 	if err != nil {
-		return nil, errors.Wrapf(err, "marshal text msg, reply: %v", reply)
+		return nil, errors.Wrapf(err, "marshal text msg, reply: %v", replyMsg)
 	}
 
 	return output, nil

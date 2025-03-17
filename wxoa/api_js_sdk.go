@@ -4,26 +4,11 @@ import (
 	"crypto/sha1"
 	"fmt"
 	"github.com/go-resty/resty/v2"
+	"github.com/hdget/lib-wechat/wxoa/types"
 	"github.com/hdget/utils/hash"
 	"github.com/pkg/errors"
 	"time"
 )
-
-// JsSdkSignature signature接口返回结果
-type JsSdkSignature struct {
-	AppID     string `json:"appId"`
-	Ticket    string `json:"ticket"`
-	Noncestr  string `json:"noncestr"`
-	Url       string `json:"Url"`
-	Timestamp int64  `json:"timestamp"`
-	Signature string `json:"signature"`
-}
-
-// JsSdkTicketResult 类型
-type JsSdkTicketResult struct {
-	Value     string `json:"ticket,omitempty"`
-	ExpiresIn int    `json:"expires_in,omitempty"`
-}
 
 const (
 	redisKeyJsApiTicket = "js_api_ticket"
@@ -32,7 +17,7 @@ const (
 
 // GetJsSdkSignature 生成JsApi SDK微信签名
 // nolint:recheck
-func (impl *wxoaImpl) GetJsSdkSignature(url string) (*JsSdkSignature, error) {
+func (impl *wxoaImpl) GetJsSdkSignature(url string) (*types.JsSdkSignatureResult, error) {
 	ticket, err := impl.getJsSdkTicket()
 	if err != nil {
 		return nil, err
@@ -51,7 +36,7 @@ func (impl *wxoaImpl) GetJsSdkSignature(url string) (*JsSdkSignature, error) {
 }
 
 // 生成微信签名
-func (impl *wxoaImpl) generateJsSdkSignature(ticket, url string) (*JsSdkSignature, error) {
+func (impl *wxoaImpl) generateJsSdkSignature(ticket, url string) (*types.JsSdkSignatureResult, error) {
 	now := time.Now().Unix()
 	nonceStr := hash.GenerateRandString(32)
 	s := fmt.Sprintf(
@@ -70,7 +55,7 @@ func (impl *wxoaImpl) generateJsSdkSignature(ticket, url string) (*JsSdkSignatur
 	}
 	hashValue := fmt.Sprintf("%x", h.Sum(nil))
 
-	return &JsSdkSignature{
+	return &types.JsSdkSignatureResult{
 		AppID:     impl.AppId,
 		Ticket:    ticket,
 		Noncestr:  nonceStr,
@@ -113,7 +98,7 @@ func (impl *wxoaImpl) getJsSdkTicket() (string, error) {
 }
 
 // generateJsSdkTicket jssdk获取凭证
-func (impl *wxoaImpl) generateJsSdkTicket(accessToken string) (*JsSdkTicketResult, error) {
+func (impl *wxoaImpl) generateJsSdkTicket(accessToken string) (*types.JsSdkTicketResult, error) {
 	url := fmt.Sprintf(urlGetJsSdkTicket, accessToken)
 	client := resty.New()
 	resp, err := client.R().Get(url)
@@ -121,7 +106,7 @@ func (impl *wxoaImpl) generateJsSdkTicket(accessToken string) (*JsSdkTicketResul
 		return nil, err
 	}
 
-	var result JsSdkTicketResult
+	var result types.JsSdkTicketResult
 	err = impl.ParseApiResult(resp.Body(), &result)
 	if err != nil {
 		return nil, err

@@ -3,10 +3,11 @@ package wxmp
 import (
 	"github.com/hdget/common/intf"
 	"github.com/hdget/lib-wechat"
+	"github.com/hdget/lib-wechat/api"
 )
 
 type wxmpImpl struct {
-	*wechat.Api
+	*api.Api
 }
 
 var (
@@ -14,7 +15,7 @@ var (
 )
 
 func New(appId, appSecret string, redisProvider intf.RedisProvider) (ApiWxmp, error) {
-	a, err := wechat.New(wechat.ApiKindWxmp, appId, appSecret, redisProvider)
+	a, err := api.New(wechat.ApiKindWxmp, appId, appSecret, redisProvider)
 	if err != nil {
 		return nil, err
 	}

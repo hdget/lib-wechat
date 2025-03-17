@@ -1,4 +1,4 @@
-package wechat
+package api
 
 import (
 	"fmt"
@@ -7,8 +7,8 @@ import (
 	"github.com/pkg/errors"
 )
 
-type accessTokenResult struct {
-	ApiError
+type AccessTokenResult struct {
+	Result
 	AccessToken string `json:"access_token"`
 	ExpiresIn   int    `json:"expires_in"`
 }
@@ -42,7 +42,7 @@ func (a *Api) GetAccessToken() (string, error) {
 	return result.AccessToken, nil
 }
 
-func (a *Api) generateAccessToken() (*accessTokenResult, error) {
+func (a *Api) generateAccessToken() (*AccessTokenResult, error) {
 	wxAccessTokenURL := fmt.Sprintf(urlGetWechatAccessToken, a.AppId, a.AppSecret)
 
 	resp, err := resty.New().R().Get(wxAccessTokenURL)
@@ -50,7 +50,7 @@ func (a *Api) generateAccessToken() (*accessTokenResult, error) {
 		return nil, errors.Wrapf(err, "get access token, appId: %s", a.AppId)
 	}
 
-	var result accessTokenResult
+	var result AccessTokenResult
 	err = a.ParseApiResult(resp.Body(), &result)
 	if err != nil {
 		return nil, err

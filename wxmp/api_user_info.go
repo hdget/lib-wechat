@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/go-resty/resty/v2"
-	wechat "github.com/hdget/lib-wechat"
+	"github.com/hdget/lib-wechat/api"
 	"github.com/pkg/errors"
 )
 
@@ -36,14 +36,14 @@ type MobileInfo struct {
 
 // sessionResult wechat miniprogram login session
 type sessionResult struct {
-	wechat.ApiError
+	api.Result
 	SessionKey string `json:"session_key"`
 	OpenId     string `json:"openid"`
 	UnionId    string `json:"unionid"`
 }
 
 type GetUserPhoneNumberResult struct {
-	wechat.ApiError
+	api.Result
 	PhoneInfo MobileInfo `json:"phone_info"`
 }
 

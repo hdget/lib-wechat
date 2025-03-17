@@ -1,23 +1,30 @@
-package wechat
+package api
 
 import (
 	"encoding/json"
 	"fmt"
 	"github.com/hdget/common/intf"
 	"github.com/hdget/common/types"
+	"github.com/hdget/lib-wechat"
 	"github.com/hdget/utils/convert"
 	"github.com/pkg/errors"
 )
 
 type Api struct {
-	Kind      ApiKind
+	Kind      wechat.ApiKind
 	AppId     string
 	AppSecret string
 	Cache     Cache
 }
 
-func New(kind ApiKind, appId, appSecret string, providers ...intf.Provider) (*Api, error) {
-	if kind == ApiKindUnknown || appId == "" || appSecret == "" {
+// Result 微信的API结果
+type Result struct {
+	ErrCode int    `json:"errcode"`
+	ErrMsg  string `json:"errmsg"`
+}
+
+func New(kind wechat.ApiKind, appId, appSecret string, providers ...intf.Provider) (*Api, error) {
+	if kind == wechat.ApiKindUnknown || appId == "" || appSecret == "" {
 		return nil, errors.New("invalid parameter")
 	}
 
@@ -40,11 +47,11 @@ func (a *Api) ParseApiResult(data []byte, result any) error {
 	err := json.Unmarshal(data, result)
 	if err != nil {
 		// 如果unmarshal错误,尝试解析错误信息
-		var apiError ApiError
-		_ = json.Unmarshal(data, &apiError)
+		var ret Result
+		_ = json.Unmarshal(data, &ret)
 
-		if apiError.ErrCode != 0 {
-			return fmt.Errorf("api error, err: %s", apiError.ErrMsg)
+		if ret.ErrCode != 0 {
+			return fmt.Errorf("api error, err: %s", ret.ErrMsg)
 		} else {
 			return errors.Wrapf(err, "unmarshal api result, body: %s", convert.BytesToString(data))
 		}
