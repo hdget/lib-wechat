@@ -20,6 +20,6 @@ func (m *LocationEventMessage) Reply() ([]byte, error) {
 	return m.ReplyText(fmt.Sprintf("地理位置事件, message: %+v", m))
 }
 
-func (m LocationEventMessage) GetKind() MessageKind {
-	return MessageKindEventLocation
+func (m LocationEventMessage) GetKind() Kind {
+	return KindEventLocation
 }

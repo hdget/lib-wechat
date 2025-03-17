@@ -16,6 +16,6 @@ func (m *UnSubscribeEventMessage) Reply() ([]byte, error) {
 	return m.ReplyText("取消关注！")
 }
 
-func (m *UnSubscribeEventMessage) GetKind() MessageKind {
-	return MessageKindEventUnSubscribe
+func (m *UnSubscribeEventMessage) GetKind() Kind {
+	return KindEventUnSubscribe
 }

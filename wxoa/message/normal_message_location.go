@@ -12,6 +12,6 @@ func newLocationNormalMessage(msg *Message, data []byte) (Messager, error) {
 	return &LocationNormalMessage{Message: msg}, nil
 }
 
-func (m *LocationNormalMessage) GetKind() MessageKind {
-	return MessageKindNormalLocation
+func (m *LocationNormalMessage) GetKind() Kind {
+	return KindNormalLocation
 }

@@ -12,6 +12,6 @@ func newImageNormalMessage(msg *Message, data []byte) (Messager, error) {
 	return &ImageNormalMessage{Message: msg}, nil
 }
 
-func (m *ImageNormalMessage) GetKind() MessageKind {
-	return MessageKindNormalImage
+func (m *ImageNormalMessage) GetKind() Kind {
+	return KindNormalImage
 }

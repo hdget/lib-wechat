@@ -16,6 +16,6 @@ func (m *SubscribeEventMessage) Reply() ([]byte, error) {
 	return m.ReplyText("欢迎关注！")
 }
 
-func (m *SubscribeEventMessage) GetKind() MessageKind {
-	return MessageKindEventSubscribe
+func (m *SubscribeEventMessage) GetKind() Kind {
+	return KindEventSubscribe
 }

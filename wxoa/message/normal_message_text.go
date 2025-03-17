@@ -8,6 +8,6 @@ func newTextNormalMessage(msg *Message, data []byte) (Messager, error) {
 	return &TextNormalMessage{Message: msg}, nil
 }
 
-func (m *TextNormalMessage) GetKind() MessageKind {
-	return MessageKindNormalText
+func (m *TextNormalMessage) GetKind() Kind {
+	return KindNormalText
 }

@@ -20,6 +20,6 @@ func (m *ClickEventMessage) Reply() ([]byte, error) {
 	return m.ReplyText(fmt.Sprintf("点击事件, message: %+v", m))
 }
 
-func (m *ClickEventMessage) GetKind() MessageKind {
-	return MessageKindEventClick
+func (m *ClickEventMessage) GetKind() Kind {
+	return KindEventClick
 }

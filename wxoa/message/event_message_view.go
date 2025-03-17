@@ -16,6 +16,6 @@ func (m *ViewEventMessage) Handle() ([]byte, error) {
 	return m.ReplyText(fmt.Sprintf("跳转链接事件, message: %+v", m))
 }
 
-func (m *ViewEventMessage) GetKind() MessageKind {
-	return MessageKindEventView
+func (m *ViewEventMessage) GetKind() Kind {
+	return KindEventView
 }
