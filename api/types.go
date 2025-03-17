@@ -1,4 +1,4 @@
-package wechat
+package api
 
 type ApiKind int // 微信业务类型
 

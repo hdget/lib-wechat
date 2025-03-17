@@ -3,7 +3,6 @@ package api
 import (
 	"fmt"
 	"github.com/hdget/common/intf"
-	"github.com/hdget/lib-wechat"
 )
 
 type Cache interface {
@@ -16,14 +15,14 @@ const (
 )
 
 type cacheImpl struct {
-	businessKind  wechat.ApiKind
+	businessKind  ApiKind
 	appId         string
 	redisProvider intf.RedisProvider
 }
 
 var _ Cache = (*cacheImpl)(nil)
 
-func newCache(businessKind wechat.ApiKind, appId string, redisProvider intf.RedisProvider) Cache {
+func newCache(businessKind ApiKind, appId string, redisProvider intf.RedisProvider) Cache {
 	return &cacheImpl{
 		businessKind:  businessKind,
 		appId:         appId,

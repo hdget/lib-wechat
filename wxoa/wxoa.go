@@ -2,7 +2,6 @@ package wxoa
 
 import (
 	"github.com/hdget/common/intf"
-	wechat "github.com/hdget/lib-wechat"
 	"github.com/hdget/lib-wechat/api"
 )
 
@@ -15,7 +14,7 @@ var (
 )
 
 func New(appId, appSecret string, redisProvider intf.RedisProvider) (ApiWxoa, error) {
-	a, err := api.New(wechat.ApiKindWxoa, appId, appSecret, redisProvider)
+	a, err := api.New(api.ApiKindWxoa, appId, appSecret, redisProvider)
 	if err != nil {
 		return nil, err
 	}

@@ -1,7 +1,6 @@
 package wxopen
 
 import (
-	"github.com/hdget/lib-wechat"
 	"github.com/hdget/lib-wechat/api"
 )
 
@@ -14,7 +13,7 @@ var (
 )
 
 func New(appId, appSecret string) (ApiWxopen, error) {
-	b, err := api.New(wechat.ApiKindWxopen, appId, appSecret)
+	b, err := api.New(api.ApiKindWxopen, appId, appSecret)
 	if err != nil {
 		return nil, err
 	}

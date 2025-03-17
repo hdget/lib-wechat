@@ -5,13 +5,12 @@ import (
 	"fmt"
 	"github.com/hdget/common/intf"
 	"github.com/hdget/common/types"
-	"github.com/hdget/lib-wechat"
 	"github.com/hdget/utils/convert"
 	"github.com/pkg/errors"
 )
 
 type Api struct {
-	Kind      wechat.ApiKind
+	Kind      ApiKind
 	AppId     string
 	AppSecret string
 	Cache     Cache
@@ -23,8 +22,8 @@ type Result struct {
 	ErrMsg  string `json:"errmsg"`
 }
 
-func New(kind wechat.ApiKind, appId, appSecret string, providers ...intf.Provider) (*Api, error) {
-	if kind == wechat.ApiKindUnknown || appId == "" || appSecret == "" {
+func New(kind ApiKind, appId, appSecret string, providers ...intf.Provider) (*Api, error) {
+	if kind == ApiKindUnknown || appId == "" || appSecret == "" {
 		return nil, errors.New("invalid parameter")
 	}
 
