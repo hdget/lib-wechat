@@ -1,6 +1,7 @@
 package wxoa
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/go-resty/resty/v2"
 	"github.com/hdget/lib-wechat/api"
@@ -41,9 +42,13 @@ func (impl *wxoaImpl) GetUserInfo(openid string) (*UserInfoResult, error) {
 	}
 
 	var result UserInfoResult
-	err = impl.ParseApiResult(resp.Body(), &result)
+	err = json.Unmarshal(resp.Body(), &result)
 	if err != nil {
 		return nil, err
+	}
+
+	if result.ErrCode != 0 {
+		return nil, fmt.Errorf("%s, url: %s", result.ErrMsg, url)
 	}
 
 	if result.Openid == "" {

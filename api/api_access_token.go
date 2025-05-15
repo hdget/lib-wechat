@@ -1,9 +1,9 @@
 package api
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/go-resty/resty/v2"
-	"github.com/hdget/utils/convert"
 	"github.com/pkg/errors"
 )
 
@@ -51,13 +51,13 @@ func (a *Api) generateAccessToken() (*AccessTokenResult, error) {
 	}
 
 	var result AccessTokenResult
-	err = a.ParseApiResult(resp.Body(), &result)
+	err = json.Unmarshal(resp.Body(), &result)
 	if err != nil {
 		return nil, err
 	}
 
-	if result.AccessToken == "" {
-		return nil, fmt.Errorf("empty access token, url: %s, resp: %s", wxAccessTokenURL, convert.BytesToString(resp.Body()))
+	if result.ErrCode != 0 {
+		return nil, fmt.Errorf("%s, url: %s", result.ErrMsg, wxAccessTokenURL)
 	}
 
 	return &result, nil
