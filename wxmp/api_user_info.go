@@ -139,9 +139,13 @@ func (impl *wxmpImpl) GetUserPhoneNumber(code string) (*MobileInfo, error) {
 	}
 
 	var result GetUserPhoneNumberResult
-	err = impl.ParseApiResult(resp.Body(), &result)
+	err = json.Unmarshal(resp.Body(), &result)
 	if err != nil {
 		return nil, err
+	}
+
+	if result.ErrCode != 0 {
+		return nil, fmt.Errorf("%s, url: %s", result.ErrMsg, urlGetUserPhoneNumber)
 	}
 
 	return &result.PhoneInfo, nil
@@ -167,9 +171,13 @@ func (impl *wxmpImpl) code2session(code string) (*sessionResult, error) {
 	}
 
 	var result sessionResult
-	err = impl.ParseApiResult(resp.Body(), &result)
+	err = json.Unmarshal(resp.Body(), &result)
 	if err != nil {
 		return nil, err
+	}
+
+	if result.ErrCode != 0 {
+		return nil, fmt.Errorf("%s, url: %s", result.ErrMsg, url)
 	}
 
 	if result.SessionKey == "" {

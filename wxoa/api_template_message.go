@@ -103,9 +103,13 @@ func (impl *wxoaImpl) SendTemplateMessage(toUser string, m *TemplateMessage) err
 	}
 
 	var result templateMessageSendResult
-	err = impl.ParseApiResult(resp.Body(), &result)
+	err = json.Unmarshal(resp.Body(), &result)
 	if err != nil {
 		return err
+	}
+
+	if result.ErrCode != 0 {
+		return fmt.Errorf("%s, url: %s", result.ErrMsg, url)
 	}
 
 	return nil

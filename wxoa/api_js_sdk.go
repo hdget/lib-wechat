@@ -2,6 +2,7 @@ package wxoa
 
 import (
 	"crypto/sha1"
+	"encoding/json"
 	"fmt"
 	"github.com/go-resty/resty/v2"
 	"github.com/hdget/lib-wechat/api"
@@ -125,9 +126,13 @@ func (impl *wxoaImpl) generateJsSdkTicket(accessToken string) (*JsSdkTicketResul
 	}
 
 	var result JsSdkTicketResult
-	err = impl.ParseApiResult(resp.Body(), &result)
+	err = json.Unmarshal(resp.Body(), &result)
 	if err != nil {
 		return nil, err
+	}
+
+	if result.ErrCode != 0 {
+		return nil, fmt.Errorf("%s, url: %s", result.ErrMsg, urlGetJsSdkTicket)
 	}
 
 	return &result, nil

@@ -1,11 +1,8 @@
 package api
 
 import (
-	"encoding/json"
-	"fmt"
 	"github.com/hdget/common/intf"
 	"github.com/hdget/common/types"
-	"github.com/hdget/utils/convert"
 	"github.com/pkg/errors"
 )
 
@@ -44,20 +41,4 @@ func New(kind ApiKind, appId, appSecret string, providers ...intf.Provider) (*Ap
 	}
 
 	return b, nil
-}
-
-func (a *Api) ParseApiResult(data []byte, result any) error {
-	err := json.Unmarshal(data, result)
-	if err != nil {
-		// 如果unmarshal错误,尝试解析错误信息
-		var ret ApiResult
-		_ = json.Unmarshal(data, &ret)
-
-		if ret.ErrCode != 0 {
-			return fmt.Errorf("api error, err: %s", ret.ErrMsg)
-		} else {
-			return errors.Wrapf(err, "unmarshal api result, body: %s", convert.BytesToString(data))
-		}
-	}
-	return nil
 }

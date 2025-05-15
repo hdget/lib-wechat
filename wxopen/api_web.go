@@ -1,6 +1,7 @@
 package wxopen
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/go-resty/resty/v2"
 	"github.com/hdget/lib-wechat/api"
@@ -30,13 +31,17 @@ func (impl *wxopenImpl) Login(code string) (string, string, error) {
 	}
 
 	var result loginResult
-	err = impl.ParseApiResult(resp.Body(), &result)
+	err = json.Unmarshal(resp.Body(), &result)
 	if err != nil {
 		return "", "", err
 	}
 
+	if result.ErrCode != 0 {
+		return "", "", fmt.Errorf("%s, url: %s", result.ErrMsg, url)
+	}
+
 	if result.AccessToken == "" {
-		return "", "", fmt.Errorf("empty access token, url: %s, resp: %s", url, string(resp.Body()))
+		return "", "", fmt.Errorf("invalid login result, url: %s, resp: %s", url, string(resp.Body()))
 	}
 
 	return result.OpenId, result.UnionId, nil
