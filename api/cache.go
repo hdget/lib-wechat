@@ -8,14 +8,15 @@ import (
 type Cache interface {
 	Get(key string) (string, error)
 	Set(key, value string, expires ...int) error
+	Del(key string) error
 }
 
 const (
-	template = "%d:%s:%s"
+	redisKeyTemplate = "%s:%s:%s"
 )
 
 type cacheImpl struct {
-	businessKind  ApiKind
+	apiKind       ApiKind
 	appId         string
 	redisProvider intf.RedisProvider
 }
@@ -24,7 +25,7 @@ var _ Cache = (*cacheImpl)(nil)
 
 func newCache(businessKind ApiKind, appId string, redisProvider intf.RedisProvider) Cache {
 	return &cacheImpl{
-		businessKind:  businessKind,
+		apiKind:       businessKind,
 		appId:         appId,
 		redisProvider: redisProvider,
 	}
@@ -42,6 +43,10 @@ func (c *cacheImpl) Set(key, value string, expires ...int) error {
 	return c.redisProvider.My().SetEx(c.getFullKey(key), value, expires[0])
 }
 
+func (c *cacheImpl) Del(key string) error {
+	return c.redisProvider.My().Del(c.getFullKey(key))
+}
+
 func (c *cacheImpl) getFullKey(key string) string {
-	return fmt.Sprintf(template, c.businessKind, c.appId, key)
+	return fmt.Sprintf(redisKeyTemplate, c.apiKind, c.appId, key)
 }

@@ -19,12 +19,12 @@ type ApiResult struct {
 	ErrMsg  string `json:"errmsg"`
 }
 
-type ApiCommon interface {
+type Common interface {
 	GetAccessToken() (string, error)
 }
 
 func New(kind ApiKind, appId, appSecret string, providers ...intf.Provider) (*Api, error) {
-	if kind == ApiKindUnknown || appId == "" || appSecret == "" {
+	if kind == "" || appId == "" || appSecret == "" {
 		return nil, errors.New("invalid parameter")
 	}
 
