@@ -22,8 +22,8 @@ const (
 	urlGetPreAuthCode = "https://api.weixin.qq.com/cgi-bin/component/api_create_preauthcode?component_access_token=%s"
 )
 
-func (impl wxopImpl) GetPreAuthCode() (string, error) {
-	componentAccessToken, err := impl.GetAccessToken()
+func (impl wxopImpl) getPreAuthCode() (string, error) {
+	componentAccessToken, err := impl.getComponentAccessToken()
 	if err != nil {
 		return "", errors.Wrap(err, "get component verify ticket")
 	}

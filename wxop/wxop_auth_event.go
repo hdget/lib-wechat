@@ -50,7 +50,7 @@ func (impl wxopImpl) HandleAuthEvent(signature, timestamp, nonce, body string, c
 		}
 
 		if cb, exist := callbacks[infoType]; exist {
-			return cb(info.AuthorizerAppid, info)
+			return cb(info.AuthorizerAppid, info.AuthorizerRefreshToken)
 		}
 	case "unauthorized": // 取消授权
 		unAuthorizationAppId, err := impl.parseUnAuthorizationAppId(data)

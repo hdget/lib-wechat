@@ -6,13 +6,13 @@ import (
 	"github.com/pkg/errors"
 )
 
+// LoadAuthorizerRefreshToken 定义从持久化存储中加载refreshToken的函数
+type LoadAuthorizerRefreshToken func(authorizerAppid string) (string, error)
+
 type ApiWxop interface {
-	api.Common
-	HandleAuthEvent(signature, timestamp, nonce, body string, callbacks map[string]AuthCallback) error // 处理授权事件
-	GetComponentVerifyTicket() (string, error)                                                         // 获取验证票据, 有效期12个小时
-	GetComponentAccessToken() (string, error)                                                          // 获取第三方平台接口的调用凭据, 有效期为2小时
-	GetPreAuthCode() (string, error)                                                                   // 获取预授权码
-	GetAuthUrl(client, redirectUrl, authCode string) (string, error)                                   // 获取授权链接
+	HandleAuthEvent(signature, timestamp, nonce, body string, callbacks map[string]AuthCallback) error                  // 处理授权事件
+	GetAuthUrl(client, redirectUrl, authCode string) (string, error)                                                    // 获取授权链接
+	GetAuthorizerAccessToken(authorizerAppid string, fnLoadAuthRefreshToken LoadAuthorizerRefreshToken) (string, error) // 获取授权访问令牌
 }
 
 type wxopImpl struct {

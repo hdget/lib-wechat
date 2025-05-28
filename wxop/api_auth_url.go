@@ -13,7 +13,7 @@ const (
 )
 
 func (impl wxopImpl) GetAuthUrl(client, redirectUrl, authCode string) (string, error) {
-	preAuthCode, err := impl.GetPreAuthCode()
+	preAuthCode, err := impl.getPreAuthCode()
 	if err != nil {
 		return "", err
 	}

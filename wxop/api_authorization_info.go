@@ -30,7 +30,7 @@ const (
 )
 
 func (impl wxopImpl) apiQueryAuthorizationInfo(authorizationCode string) (*AuthorizationInfo, error) {
-	componentVerifyTicket, err := impl.GetComponentVerifyTicket()
+	componentAccessToken, err := impl.getComponentAccessToken()
 	if err != nil {
 		return nil, errors.Wrap(err, "get component verify ticket")
 	}
@@ -40,7 +40,7 @@ func (impl wxopImpl) apiQueryAuthorizationInfo(authorizationCode string) (*Autho
 		AuthorizationCode: authorizationCode,
 	}
 
-	url := fmt.Sprintf(urlQueryAuthorizationInfo, componentVerifyTicket)
+	url := fmt.Sprintf(urlQueryAuthorizationInfo, componentAccessToken)
 	resp, err := resty.New().R().SetBody(req).Post(url)
 	if err != nil {
 		return nil, err

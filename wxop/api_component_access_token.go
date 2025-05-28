@@ -22,10 +22,10 @@ type getComponentAccessTokenResult struct {
 
 const (
 	urlGetComponentAccessToken   = "https://api.weixin.qq.com/cgi-bin/component/api_component_token"
-	redisKeyComponentAccessToken = "wxop:component_access_token"
+	redisKeyComponentAccessToken = "component_access_token"
 )
 
-func (impl wxopImpl) GetComponentAccessToken() (string, error) {
+func (impl wxopImpl) getComponentAccessToken() (string, error) {
 	componentAccessToken, err := impl.Cache.Get(redisKeyComponentAccessToken)
 	if err != nil { // 缓存取不到则通过API接口获取并缓存起来
 		result, err := impl.apiGetComponentAccessToken()
@@ -46,7 +46,7 @@ func (impl wxopImpl) GetComponentAccessToken() (string, error) {
 }
 
 func (impl wxopImpl) apiGetComponentAccessToken() (*getComponentAccessTokenResult, error) {
-	componentVerifyTicket, err := impl.GetComponentVerifyTicket()
+	componentVerifyTicket, err := impl.getComponentVerifyTicket()
 	if err != nil {
 		return nil, errors.Wrap(err, "get component verify ticket")
 	}

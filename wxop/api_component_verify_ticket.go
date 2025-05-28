@@ -7,10 +7,10 @@ type xmlComponentVerifyTicketEvent struct {
 }
 
 const (
-	redisKeyComponentVerifyTicket = "wxop:component_access_token"
+	redisKeyComponentVerifyTicket = "component_access_token"
 )
 
-func (impl wxopImpl) GetComponentVerifyTicket() (string, error) {
+func (impl wxopImpl) getComponentVerifyTicket() (string, error) {
 	return impl.Cache.Get(redisKeyComponentVerifyTicket)
 }
 
