@@ -1,23 +1,16 @@
 package wxopen
 
-import (
-	"github.com/hdget/lib-wechat/api"
-)
+import "github.com/hdget/lib/lib-wechat/wxopen/api"
 
-type wxopenImpl struct {
-	*api.Api
+type Lib interface {
 }
 
-var (
-	_ ApiWxopen = (*wxopenImpl)(nil)
-)
+type wxopenImpl struct {
+	api api.Api
+}
 
-func New(appId, appSecret string) (ApiWxopen, error) {
-	b, err := api.New(api.ApiKindWxopen, appId, appSecret)
-	if err != nil {
-		return nil, err
-	}
+func New(appId, appSecret string) Lib {
 	return &wxopenImpl{
-		Api: b,
-	}, nil
+		api: api.New(appId, appSecret),
+	}
 }
