@@ -2,7 +2,7 @@ package cache
 
 import (
 	"github.com/hdget/common/intf"
-	"github.com/hdget/lib/lib-wechat/cache"
+	"github.com/hdget/lib-wechat/cache"
 )
 
 type Cache interface {

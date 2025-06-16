@@ -1,6 +1,6 @@
 package wxopen
 
-import "github.com/hdget/lib/lib-wechat/wxopen/api"
+import "github.com/hdget/lib-wechat/wxopen/api"
 
 type Lib interface {
 }
