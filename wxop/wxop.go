@@ -3,8 +3,8 @@ package wxop
 import (
 	"fmt"
 	"github.com/hdget/common/intf"
-	"github.com/hdget/lib/lib-wechat/wxop/api"
-	"github.com/hdget/lib/lib-wechat/wxop/cache"
+	"github.com/hdget/lib-wechat/wxop/api"
+	"github.com/hdget/lib-wechat/wxop/cache"
 	"github.com/pkg/errors"
 	"github.com/spf13/cast"
 	"strings"

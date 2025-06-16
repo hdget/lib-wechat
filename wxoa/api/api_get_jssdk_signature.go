@@ -3,7 +3,7 @@ package api
 import (
 	"crypto/sha1"
 	"fmt"
-	"github.com/hdget/lib/lib-wechat/api"
+	"github.com/hdget/lib-wechat/api"
 	"github.com/hdget/utils/hash"
 	"time"
 )

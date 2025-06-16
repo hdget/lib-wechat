@@ -1,7 +1,7 @@
 package wxoa
 
 import (
-	"github.com/hdget/lib/lib-wechat/wxoa/message"
+	"github.com/hdget/lib-wechat/wxoa/message"
 	"sync"
 )
 
