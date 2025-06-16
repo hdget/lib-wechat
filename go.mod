@@ -1,4 +1,4 @@
-module github.com/hdget/lib/lib-wechat
+module github.com/hdget/lib-wechat
 
 go 1.23.7
 

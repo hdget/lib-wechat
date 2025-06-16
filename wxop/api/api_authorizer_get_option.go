@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"github.com/elliotchance/pie/v2"
 	"github.com/go-resty/resty/v2"
-	"github.com/hdget/lib/lib-wechat/api"
+	"github.com/hdget/lib-wechat/api"
 	"github.com/hdget/utils/convert"
 	"github.com/pkg/errors"
 )

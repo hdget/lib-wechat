@@ -1,6 +1,6 @@
 package api
 
-import "github.com/hdget/lib/lib-wechat/api"
+import "github.com/hdget/lib-wechat/api"
 
 type Api interface {
 	api.Api

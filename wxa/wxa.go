@@ -2,8 +2,8 @@ package wxa
 
 import (
 	"github.com/hdget/common/intf"
-	"github.com/hdget/lib/lib-wechat/wxa/api"
-	"github.com/hdget/lib/lib-wechat/wxa/cache"
+	"github.com/hdget/lib-wechat/wxa/api"
+	"github.com/hdget/lib-wechat/wxa/cache"
 )
 
 type Lib interface {
