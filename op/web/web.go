@@ -1,21 +1,23 @@
-package wxopen
+package web
 
-import "github.com/hdget/lib-wechat/wxopen/api"
+import (
+	"github.com/hdget/lib-wechat/op/web/api"
+)
 
 type Lib interface {
 	Login(code string) (string, string, error) // 获取OpenId和UnionId
 }
 
-type wxopenImpl struct {
+type webAppImpl struct {
 	api api.Api
 }
 
 func New(appId, appSecret string) Lib {
-	return &wxopenImpl{
+	return &webAppImpl{
 		api: api.New(appId, appSecret),
 	}
 }
 
-func (impl wxopenImpl) Login(code string) (string, string, error) {
+func (impl webAppImpl) Login(code string) (string, string, error) {
 	return impl.api.Login(code)
 }

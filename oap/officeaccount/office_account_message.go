@@ -1,18 +1,18 @@
-package wxoa
+package officeaccount
 
 import (
-	"github.com/hdget/lib-wechat/wxoa/message"
+	message2 "github.com/hdget/lib-wechat/oap/officeaccount/message"
 	"sync"
 )
 
 var (
 	locker              sync.Mutex
-	_msgKind2msgHandler = map[message.MessageKind]message.MessageHandler{}
+	_msgKind2msgHandler = map[message2.MessageKind]message2.MessageHandler{}
 )
 
 // HandleMessage 处理消息
 func (impl *wxoaImpl) HandleMessage(data []byte) ([]byte, error) {
-	m, err := message.New(data)
+	m, err := message2.New(data)
 	if err != nil {
 		return nil, err
 	}
@@ -23,7 +23,7 @@ func (impl *wxoaImpl) HandleMessage(data []byte) ([]byte, error) {
 	return m.Reply()
 }
 
-func RegisterMessageHandler(msgKind message.MessageKind, handler message.MessageHandler) error {
+func RegisterMessageHandler(msgKind message2.MessageKind, handler message2.MessageHandler) error {
 	locker.Lock()
 	defer locker.Unlock()
 	_msgKind2msgHandler[msgKind] = handler

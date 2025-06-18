@@ -1,4 +1,4 @@
-package wxop
+package serviceprovider
 
 import (
 	"encoding/xml"
@@ -13,7 +13,7 @@ type componentVerifyTicketEventProcessor struct {
 	*eventImpl
 }
 
-func (impl wxopImpl) newComponentVerifyTicketEventProcessor(e *eventImpl) EventProcessor {
+func (impl serviceProviderImpl) newComponentVerifyTicketEventProcessor(e *eventImpl) EventProcessor {
 	return &componentVerifyTicketEventProcessor{
 		eventImpl: e,
 	}
@@ -30,7 +30,7 @@ func (h componentVerifyTicketEventProcessor) Process(data []byte) (string, error
 	// return cache.New(api.KindWxop, h.appId, h.redisProvider).Set(redisKeyComponentVerifyTicket, xmlEvent.ComponentVerifyTicket)
 }
 
-func (impl wxopImpl) updateComponentVerifyTicket(componentVerifyTicket string) error {
+func (impl serviceProviderImpl) updateComponentVerifyTicket(componentVerifyTicket string) error {
 	if componentVerifyTicket == "" {
 		return errors.New("empty component verify ticket")
 	}

@@ -1,4 +1,4 @@
-package wxop
+package serviceprovider
 
 import (
 	"encoding/xml"
@@ -14,7 +14,7 @@ type authorizedEventHandler struct {
 	*eventImpl
 }
 
-func (impl wxopImpl) newAuthorizedEventProcessor(e *eventImpl) EventProcessor {
+func (impl serviceProviderImpl) newAuthorizedEventProcessor(e *eventImpl) EventProcessor {
 	return &authorizedEventHandler{
 		eventImpl: e,
 	}

@@ -1,9 +1,9 @@
-package wxa
+package miniprogram
 
 import (
 	"github.com/hdget/common/intf"
-	"github.com/hdget/lib-wechat/wxa/api"
-	"github.com/hdget/lib-wechat/wxa/cache"
+	"github.com/hdget/lib-wechat/oap/miniprogram/api"
+	"github.com/hdget/lib-wechat/oap/miniprogram/cache"
 )
 
 type Lib interface {

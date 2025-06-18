@@ -21,5 +21,5 @@ type cacheImpl struct {
 }
 
 func New(appId string, redis intf.RedisProvider) Cache {
-	return &cacheImpl{Cache: cache.New(cache.KindWxop, appId, redis)}
+	return &cacheImpl{Cache: cache.New(cache.KindOPServiceProvider, appId, redis)}
 }
