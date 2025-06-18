@@ -1,4 +1,4 @@
-package wxop
+package serviceprovider
 
 import (
 	"encoding/xml"
@@ -35,7 +35,7 @@ type Event struct {
 	Body           string
 }
 
-func (impl wxopImpl) HandleEvent(event *Event, handlers map[EventKind]EventHandler) error {
+func (impl serviceProviderImpl) HandleEvent(event *Event, handlers map[EventKind]EventHandler) error {
 	crypt, err := NewWXBizMsgCrypt(impl.api.GetAppId(), event.Token, event.EncodingAESKey)
 	if err != nil {
 		return err

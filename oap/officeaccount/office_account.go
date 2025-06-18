@@ -1,11 +1,11 @@
-package wxoa
+package officeaccount
 
 import (
 	"crypto/sha1"
 	"fmt"
 	"github.com/hdget/common/intf"
-	"github.com/hdget/lib-wechat/wxoa/api"
-	"github.com/hdget/lib-wechat/wxoa/cache"
+	"github.com/hdget/lib-wechat/oap/officeaccount/api"
+	"github.com/hdget/lib-wechat/oap/officeaccount/cache"
 	"github.com/mitchellh/mapstructure"
 	"github.com/pkg/errors"
 	"io"

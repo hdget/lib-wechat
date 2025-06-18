@@ -1,4 +1,4 @@
-package wxoa
+package officeaccount
 
 type TemplateMessage struct {
 	// 必要参数

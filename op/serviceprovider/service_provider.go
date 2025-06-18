@@ -1,10 +1,10 @@
-package wxop
+package serviceprovider
 
 import (
 	"fmt"
 	"github.com/hdget/common/intf"
-	"github.com/hdget/lib-wechat/wxop/api"
-	"github.com/hdget/lib-wechat/wxop/cache"
+	"github.com/hdget/lib-wechat/op/serviceprovider/api"
+	"github.com/hdget/lib-wechat/op/serviceprovider/cache"
 	"github.com/pkg/errors"
 	"github.com/spf13/cast"
 	"strings"
@@ -17,7 +17,7 @@ type Lib interface {
 	GetComponentAccessToken() (string, error)                            // 获取第三方平台AccessToken
 }
 
-type wxopImpl struct {
+type serviceProviderImpl struct {
 	api   api.Api
 	cache cache.Cache
 }
@@ -28,13 +28,13 @@ const (
 )
 
 func New(appId, appSecret string, redisProvider intf.RedisProvider) Lib {
-	return &wxopImpl{
+	return &serviceProviderImpl{
 		api:   api.New(appId, appSecret),
 		cache: cache.New(appId, redisProvider),
 	}
 }
 
-func (impl wxopImpl) GetAuthUrl(client, redirectUrl string, authType int) (string, error) {
+func (impl serviceProviderImpl) GetAuthUrl(client, redirectUrl string, authType int) (string, error) {
 	componentAccessToken, err := impl.GetComponentAccessToken()
 	if err != nil {
 		return "", err
@@ -67,7 +67,7 @@ func (impl wxopImpl) GetAuthUrl(client, redirectUrl string, authType int) (strin
 	}
 }
 
-func (impl wxopImpl) GetAuthorizerAccessToken(authorizerAppid string) (string, error) {
+func (impl serviceProviderImpl) GetAuthorizerAccessToken(authorizerAppid string) (string, error) {
 	authorizerAccessToken, _ := impl.cache.GetAuthorizerAccessToken(authorizerAppid)
 	if authorizerAccessToken == "" {
 		componentAccessToken, err := impl.GetComponentAccessToken()
@@ -100,7 +100,7 @@ func (impl wxopImpl) GetAuthorizerAccessToken(authorizerAppid string) (string, e
 }
 
 // getAuthorizerRefreshToken 获取保存的authorizerRefreshToken, 先从缓存中找，找不到从调用WX API接口获取
-func (impl wxopImpl) getAuthorizerRefreshToken(appId string) (string, error) {
+func (impl serviceProviderImpl) getAuthorizerRefreshToken(appId string) (string, error) {
 	refreshToken, _ := impl.cache.GetAuthorizerRefreshToken(appId)
 	if refreshToken == "" {
 		componentAccessToken, err := impl.GetComponentAccessToken()
@@ -128,7 +128,7 @@ func (impl wxopImpl) getAuthorizerRefreshToken(appId string) (string, error) {
 	return refreshToken, nil
 }
 
-func (impl wxopImpl) GetComponentAccessToken() (string, error) {
+func (impl serviceProviderImpl) GetComponentAccessToken() (string, error) {
 	componentAccessToken, _ := impl.cache.GetComponentAccessToken()
 	if componentAccessToken == "" { // 缓存取不到则通过API接口获取并缓存起来
 		componentVerifyTicket, err := impl.getComponentVerifyTicket()
@@ -153,7 +153,7 @@ func (impl wxopImpl) GetComponentAccessToken() (string, error) {
 	return componentAccessToken, nil
 }
 
-func (impl wxopImpl) getComponentVerifyTicket() (string, error) {
+func (impl serviceProviderImpl) getComponentVerifyTicket() (string, error) {
 	componentVerifyTicket, _ := impl.cache.GetComponentVerifyTicket()
 	if componentVerifyTicket == "" {
 		// 如果缓存里面没有component verify ticket, 尝试重新推送ticket

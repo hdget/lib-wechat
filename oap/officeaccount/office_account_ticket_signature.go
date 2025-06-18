@@ -1,4 +1,4 @@
-package wxoa
+package officeaccount
 
 import (
 	"crypto/sha1"
