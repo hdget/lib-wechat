@@ -5,22 +5,15 @@ import (
 	"github.com/hdget/common/intf"
 )
 
-//
-//type Api interface {
-//	Get(key string) (string, error)
-//	Set(key, value string, expires ...int) error
-//	Del(key string) error
-//	HGet(key, member string) (string, error)
-//	HSet(key, member, value string) error
-//}
-
 type Kind string // 微信业务类型
 
+// OAP: Office Account Platform
+// OP: Open Platform
 const (
-	KindWxa    Kind = "wxa"    // 微信小程序
-	KindWxoa   Kind = "wxoa"   // 微信公众号
-	KindWxopen Kind = "wxopen" // 微信开放平台
-	KindWxop   Kind = "wxop"   // 微信第三方平台
+	KindOAPMiniProgram    Kind = "oap:mp" // 微信小程序
+	KindOAPOfficeAccount  Kind = "oap:oa" // 微信公众号
+	KindOPServiceProvider Kind = "op:sp"  // 微信开放平台:微信第三方平台
+	KindOPWeb             Kind = "op:web" // 微信开放平台:网站应用
 )
 
 type Cache interface {
