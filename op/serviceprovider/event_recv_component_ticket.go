@@ -10,12 +10,12 @@ type xmlComponentVerifyTicketEvent struct {
 }
 
 type componentVerifyTicketEventProcessor struct {
-	*eventImpl
+	*xmlEvent
 }
 
-func (impl serviceProviderImpl) newComponentVerifyTicketEventProcessor(e *eventImpl) EventProcessor {
+func (impl serviceProviderImpl) newComponentVerifyTicketEventProcessor(e *xmlEvent) EventProcessor {
 	return &componentVerifyTicketEventProcessor{
-		eventImpl: e,
+		xmlEvent: e,
 	}
 }
 

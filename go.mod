@@ -13,6 +13,7 @@ require (
 )
 
 require (
+	github.com/fatih/structs v1.1.0 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/matoous/go-nanoid/v2 v2.1.0 // indirect
 	github.com/speps/go-hashids/v2 v2.0.1 // indirect

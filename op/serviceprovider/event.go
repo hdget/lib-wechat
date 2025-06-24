@@ -22,7 +22,7 @@ type EventProcessor interface {
 // EventHandler 授权回调函数
 type EventHandler func(input string) error
 
-type eventImpl struct {
+type xmlEvent struct {
 	InfoType string `xml:"InfoType"`
 }
 
@@ -46,25 +46,25 @@ func (impl serviceProviderImpl) HandleEvent(event *Event, handlers map[EventKind
 		return err
 	}
 
-	var e eventImpl
-	if err = xml.Unmarshal(data, &e); err != nil {
+	var evt xmlEvent
+	if err = xml.Unmarshal(data, &evt); err != nil {
 		return err
 	}
 
-	infoType := EventKind(strings.ToLower(e.InfoType))
+	infoType := EventKind(strings.ToLower(evt.InfoType))
 
 	var processor EventProcessor
 	handler := handlers[infoType]
 	switch infoType {
 	case EventKindComponentVerifyTicket:
-		processor = impl.newComponentVerifyTicketEventProcessor(&e)
+		processor = impl.newComponentVerifyTicketEventProcessor(&evt)
 		if handler == nil {
 			handler = impl.updateComponentVerifyTicket
 		}
 	case EventKindAuthorized, EventKindUpdateAuthorized: // 授权成功, 换取authorizer info
-		processor = impl.newAuthorizedEventProcessor(&e)
+		processor = impl.newAuthorizedEventProcessor(&evt)
 	case EventKindUnAuthorized: // 取消授权
-		processor = impl.newUnauthorizedEventProcessor(&e)
+		processor = impl.newUnauthorizedEventProcessor(&evt)
 	default:
 		return errors.New("unsupported event processor")
 	}

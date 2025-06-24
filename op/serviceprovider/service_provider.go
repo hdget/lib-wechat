@@ -2,6 +2,7 @@ package serviceprovider
 
 import (
 	"fmt"
+	"github.com/fatih/structs"
 	"github.com/hdget/common/intf"
 	"github.com/hdget/lib-wechat/op/serviceprovider/api"
 	"github.com/hdget/lib-wechat/op/serviceprovider/cache"
@@ -12,9 +13,12 @@ import (
 )
 
 type Lib interface {
-	HandleEvent(event *Event, handlers map[EventKind]EventHandler) error // 处理授权事件
-	GetAuthUrl(client, redirectUrl string, authType int) (string, error) // 获取授权链接
-	GetComponentAccessToken() (string, error)                            // 获取第三方平台AccessToken
+	Api() api.Api
+	Cache() cache.Cache
+	GetAuthUrl(client, redirectUrl string, authType int) (string, error)          // 获取授权链接
+	GetAuthorizerAppId(authCode string) (string, error)                           // 通过authCode获取授权应用的appId
+	GetAuthorizerInfo(appId string) (map[string]string, map[string]string, error) // 获取授权应用的信息
+	HandleEvent(event *Event, handlers map[EventKind]EventHandler) error          // 处理授权事件
 }
 
 type serviceProviderImpl struct {
@@ -34,8 +38,16 @@ func New(appId, appSecret string, redisProvider intf.RedisProvider) Lib {
 	}
 }
 
+func (impl serviceProviderImpl) Api() api.Api {
+	return impl.api
+}
+
+func (impl serviceProviderImpl) Cache() cache.Cache {
+	return impl.cache
+}
+
 func (impl serviceProviderImpl) GetAuthUrl(client, redirectUrl string, authType int) (string, error) {
-	componentAccessToken, err := impl.GetComponentAccessToken()
+	componentAccessToken, err := impl.getComponentAccessToken()
 	if err != nil {
 		return "", err
 	}
@@ -67,10 +79,90 @@ func (impl serviceProviderImpl) GetAuthUrl(client, redirectUrl string, authType 
 	}
 }
 
+func (impl serviceProviderImpl) getComponentAccessToken() (string, error) {
+	componentAccessToken, _ := impl.cache.GetComponentAccessToken()
+	if componentAccessToken == "" { // 缓存取不到则通过API接口获取并缓存起来
+		componentVerifyTicket, err := impl.getComponentVerifyTicket()
+		if err != nil {
+			return "", err
+		}
+
+		result, err := impl.api.GetComponentAccessToken(componentVerifyTicket)
+		if err != nil {
+			return "", errors.Wrap(err, "retrieve component access Token")
+		}
+
+		// 过期前十分钟过期
+		err = impl.cache.SetComponentAccessToken(result.ComponentAccessToken, result.ExpiresIn-600)
+		if err != nil {
+			return "", err
+		}
+
+		return result.ComponentAccessToken, nil
+	}
+
+	return componentAccessToken, nil
+}
+
+func (impl serviceProviderImpl) GetAuthorizerAppId(authCode string) (string, error) {
+	if authCode == "" {
+		return "", errors.New("empty auth code")
+	}
+
+	componentAccessToken, err := impl.getComponentAccessToken()
+	if err != nil {
+		return "", err
+	}
+
+	// 每次查询一次, accessToken可能会发生变化，需要更新缓存
+	authorizationInfo, err := impl.api.QueryAuthorizationInfo(componentAccessToken, authCode)
+	if err != nil {
+		return "", errors.Wrap(err, "query authorization info")
+	}
+
+	err = impl.cache.SetAuthorizerAccessToken(authorizationInfo.AuthorizerAppid, authorizationInfo.AuthorizerAccessToken, authorizationInfo.ExpiresIn)
+	if err != nil {
+		return "", err
+	}
+
+	err = impl.cache.SetAuthorizerRefreshToken(authorizationInfo.AuthorizerAppid, authorizationInfo.AuthorizerRefreshToken)
+	if err != nil {
+		return "", err
+	}
+
+	return authorizationInfo.AuthorizerAppid, nil
+}
+
+func (impl serviceProviderImpl) GetAuthorizerInfo(appId string) (map[string]string, map[string]string, error) {
+	componentAccessToken, err := impl.getComponentAccessToken()
+	if err != nil {
+		return nil, nil, err
+	}
+
+	authorizerInfo, err := impl.api.GetAuthorizerInfo(componentAccessToken, appId)
+	if err != nil {
+		return nil, nil, errors.Wrap(err, "get authorizer info")
+	}
+
+	rawAppInfo, rawFuncInfo := structs.Map(authorizerInfo.Authorizer), structs.Map(authorizerInfo.Authorization.FuncInfo)
+
+	appInfo := make(map[string]string)
+	for k, v := range rawAppInfo {
+		appInfo[k] = cast.ToString(v)
+	}
+
+	funcInfo := make(map[string]string)
+	for k, v := range rawFuncInfo {
+		funcInfo[k] = cast.ToString(v)
+	}
+
+	return appInfo, funcInfo, nil
+}
+
 func (impl serviceProviderImpl) GetAuthorizerAccessToken(authorizerAppid string) (string, error) {
 	authorizerAccessToken, _ := impl.cache.GetAuthorizerAccessToken(authorizerAppid)
 	if authorizerAccessToken == "" {
-		componentAccessToken, err := impl.GetComponentAccessToken()
+		componentAccessToken, err := impl.getComponentAccessToken()
 		if err != nil {
 			return "", err
 		}
@@ -103,7 +195,7 @@ func (impl serviceProviderImpl) GetAuthorizerAccessToken(authorizerAppid string)
 func (impl serviceProviderImpl) getAuthorizerRefreshToken(appId string) (string, error) {
 	refreshToken, _ := impl.cache.GetAuthorizerRefreshToken(appId)
 	if refreshToken == "" {
-		componentAccessToken, err := impl.GetComponentAccessToken()
+		componentAccessToken, err := impl.getComponentAccessToken()
 		if err != nil {
 			return "", err
 		}
@@ -126,31 +218,6 @@ func (impl serviceProviderImpl) getAuthorizerRefreshToken(appId string) (string,
 		return refreshToken, nil
 	}
 	return refreshToken, nil
-}
-
-func (impl serviceProviderImpl) GetComponentAccessToken() (string, error) {
-	componentAccessToken, _ := impl.cache.GetComponentAccessToken()
-	if componentAccessToken == "" { // 缓存取不到则通过API接口获取并缓存起来
-		componentVerifyTicket, err := impl.getComponentVerifyTicket()
-		if err != nil {
-			return "", err
-		}
-
-		result, err := impl.api.GetComponentAccessToken(componentVerifyTicket)
-		if err != nil {
-			return "", errors.Wrap(err, "retrieve component access Token")
-		}
-
-		// 过期前十分钟过期
-		err = impl.cache.SetComponentAccessToken(result.ComponentAccessToken, result.ExpiresIn-600)
-		if err != nil {
-			return "", err
-		}
-
-		return result.ComponentAccessToken, nil
-	}
-
-	return componentAccessToken, nil
 }
 
 func (impl serviceProviderImpl) getComponentVerifyTicket() (string, error) {

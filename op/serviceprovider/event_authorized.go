@@ -11,12 +11,12 @@ type xmlAuthAuthorizedEvent struct {
 }
 
 type authorizedEventHandler struct {
-	*eventImpl
+	*xmlEvent
 }
 
-func (impl serviceProviderImpl) newAuthorizedEventProcessor(e *eventImpl) EventProcessor {
+func (impl serviceProviderImpl) newAuthorizedEventProcessor(e *xmlEvent) EventProcessor {
 	return &authorizedEventHandler{
-		eventImpl: e,
+		xmlEvent: e,
 	}
 }
 
