@@ -18,6 +18,7 @@ type GetAuthorizerInfoResult struct {
 	api.Result
 	Authorizer    *AppInfo `json:"authorizer_info"`
 	Authorization struct {
+		AppId        string      `json:"authorizer_appid"`
 		RefreshToken string      `json:"authorizer_refresh_token"`
 		FuncInfo     []*FuncInfo `json:"func_info"`
 	} `json:"authorization_info"`
