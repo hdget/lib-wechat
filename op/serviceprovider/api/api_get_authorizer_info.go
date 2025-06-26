@@ -28,10 +28,12 @@ type AppInfo struct {
 	NickName        string `json:"nick_name"`
 	HeadImg         string `json:"head_img"`
 	ServiceTypeInfo struct {
-		Id int `json:"id"`
+		Id   int    `json:"id"`
+		Name string `json:"name"`
 	} `json:"service_type_info"`
 	VerifyTypeInfo struct {
-		Id int `json:"id"`
+		Id   int    `json:"id"`
+		Name string `json:"name"`
 	} `json:"verify_type_info"`
 	UserName     string `json:"user_name"`
 	Alias        string `json:"alias"`
