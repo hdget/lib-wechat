@@ -2,7 +2,6 @@ package serviceprovider
 
 import (
 	"fmt"
-	"github.com/fatih/structs"
 	"github.com/hdget/common/intf"
 	"github.com/hdget/lib-wechat/op/serviceprovider/api"
 	"github.com/hdget/lib-wechat/op/serviceprovider/cache"
@@ -15,10 +14,10 @@ import (
 type Lib interface {
 	Api() api.Api
 	Cache() cache.Cache
-	GetAuthUrl(client, redirectUrl string, authType int) (string, error)          // 获取授权链接
-	GetAuthorizerAppId(authCode string) (string, error)                           // 通过authCode获取授权应用的appId
-	GetAuthorizerInfo(appId string) (map[string]string, map[string]string, error) // 获取授权应用的信息
-	HandleEvent(event *Event, handlers map[EventKind]EventHandler) error          // 处理授权事件
+	GetAuthUrl(client, redirectUrl string, authType int) (string, error)  // 获取授权链接
+	GetAuthorizerAppId(authCode string) (string, error)                   // 通过authCode获取授权应用的appId
+	GetAuthorizerInfo(appId string) (*api.GetAuthorizerInfoResult, error) // 获取授权应用的信息
+	HandleEvent(event *Event, handlers map[EventKind]EventHandler) error  // 处理授权事件
 }
 
 type serviceProviderImpl struct {
@@ -133,30 +132,18 @@ func (impl serviceProviderImpl) GetAuthorizerAppId(authCode string) (string, err
 	return authorizationInfo.AuthorizerAppid, nil
 }
 
-func (impl serviceProviderImpl) GetAuthorizerInfo(appId string) (map[string]string, map[string]string, error) {
+func (impl serviceProviderImpl) GetAuthorizerInfo(appId string) (*api.GetAuthorizerInfoResult, error) {
 	componentAccessToken, err := impl.getComponentAccessToken()
 	if err != nil {
-		return nil, nil, err
+		return nil, err
 	}
 
 	authorizerInfo, err := impl.api.GetAuthorizerInfo(componentAccessToken, appId)
 	if err != nil {
-		return nil, nil, errors.Wrap(err, "get authorizer info")
+		return nil, errors.Wrap(err, "get authorizer info")
 	}
 
-	rawAppInfo, rawFuncInfo := structs.Map(authorizerInfo.Authorizer), structs.Map(authorizerInfo.Authorization.FuncInfo)
-
-	appInfo := make(map[string]string)
-	for k, v := range rawAppInfo {
-		appInfo[k] = cast.ToString(v)
-	}
-
-	funcInfo := make(map[string]string)
-	for k, v := range rawFuncInfo {
-		funcInfo[k] = cast.ToString(v)
-	}
-
-	return appInfo, funcInfo, nil
+	return authorizerInfo, nil
 }
 
 func (impl serviceProviderImpl) GetAuthorizerAccessToken(authorizerAppid string) (string, error) {
