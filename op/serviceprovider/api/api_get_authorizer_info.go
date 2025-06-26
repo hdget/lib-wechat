@@ -50,12 +50,12 @@ type AppInfo struct {
 	Signature       string `json:"signature"`
 	MiniProgramInfo struct {
 		Network struct {
-			RequestDomain   []string      `json:"RequestDomain"`
-			WsRequestDomain []interface{} `json:"WsRequestDomain"`
-			UploadDomain    []interface{} `json:"UploadDomain"`
-			DownloadDomain  []interface{} `json:"DownloadDomain"`
-			BizDomain       []interface{} `json:"BizDomain"`
-			UDPDomain       []interface{} `json:"UDPDomain"`
+			RequestDomain   []string `json:"RequestDomain"`
+			WsRequestDomain []string `json:"WsRequestDomain"`
+			UploadDomain    []string `json:"UploadDomain"`
+			DownloadDomain  []string `json:"DownloadDomain"`
+			BizDomain       []string `json:"BizDomain"`
+			UDPDomain       []string `json:"UDPDomain"`
 		} `json:"network"`
 		Categories []struct {
 			First  string `json:"first"`
