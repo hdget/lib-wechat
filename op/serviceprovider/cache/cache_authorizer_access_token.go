@@ -13,6 +13,5 @@ func (c cacheImpl) GetAuthorizerAccessToken(authorizerAppid string) (string, err
 }
 
 func (c cacheImpl) SetAuthorizerAccessToken(authorizerAppid string, accessToken string, expiresIn int) error {
-	//TODO implement me
-	panic("implement me")
+	return c.Set(fmt.Sprintf(redisKeyAuthorizerAccessToken, authorizerAppid), accessToken, expiresIn)
 }
