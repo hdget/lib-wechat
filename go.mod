@@ -1,12 +1,12 @@
 module github.com/hdget/lib-wechat
 
-go 1.23.7
+go 1.23.1
 
 require (
 	github.com/elliotchance/pie/v2 v2.9.1
 	github.com/go-resty/resty/v2 v2.16.5
 	github.com/hdget/common v0.0.12
-	github.com/hdget/utils v0.0.1
+	github.com/hdget/utils v0.0.2
 	github.com/mitchellh/mapstructure v1.5.0
 	github.com/pkg/errors v0.9.1
 	github.com/spf13/cast v1.9.2
