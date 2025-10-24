@@ -125,11 +125,7 @@ func CheckResult(result *Result, url string, request ...any) error {
 		req = request[0]
 	}
 
-	if result == nil {
-		return errors.New("result is nil")
-	}
-
-	if result.ErrCode != 0 {
+	if result != nil && result.ErrCode != 0 {
 		return fmt.Errorf("wxapi call error, url: %s, req: %v, ret: %v", url, req, result)
 	}
 
