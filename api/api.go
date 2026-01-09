@@ -27,16 +27,11 @@ const (
 	urlGetAccessToken   = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=%s&secret=%s"
 )
 
-func New(appId, appSecret string, redisProvider ...types.RedisProvider) Api {
-	var redis types.RedisProvider
-	if len(redisProvider) > 0 {
-		redis = redisProvider[0]
-	}
-
+func New(appId, appSecret string, redisProvider types.RedisProvider) Api {
 	return &apiImpl{
 		appId:         appId,
 		appSecret:     appSecret,
-		redisProvider: redis,
+		redisProvider: redisProvider,
 	}
 }
 
