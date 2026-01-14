@@ -7,6 +7,7 @@ import (
 	"sort"
 	"strings"
 
+	"github.com/hdget/common/types"
 	"github.com/hdget/lib-wechat/api"
 	"github.com/hdget/lib-wechat/api/serviceaccount/wx"
 	"github.com/pkg/errors"
@@ -25,9 +26,9 @@ type serviceAccountApiImpl struct {
 	wx.WxApi
 }
 
-func New(appId, appSecret string) ApiServiceAccount {
+func New(appId, appSecret string, redisProvider types.RedisProvider) ApiServiceAccount {
 	return &serviceAccountApiImpl{
-		Api:   api.New(appId, appSecret),
+		Api:   api.New(appId, appSecret, redisProvider),
 		WxApi: wx.New(appId, appSecret),
 	}
 }
