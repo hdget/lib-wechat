@@ -13,7 +13,7 @@ import (
 	"github.com/spf13/cast"
 )
 
-type ApiThirdParty interface {
+type API interface {
 	api.Api
 	GetAuthUrl(client, redirectUrl string, authType int) (string, error) // 获取授权链接
 	GetAuthorizerAppId(authCode string) (string, error)                  // 通过authCode获取授权应用的appId
@@ -32,7 +32,7 @@ const (
 	urlH5Auth = "https://open.weixin.qq.com/wxaopen/safe/bindcomponent?action=bindcomponent&no_scan=1&component_appid=%s&pre_auth_code=%s&redirect_uri=%s&auth_type=%d#wechat_redirect"
 )
 
-func New(appId, appSecret string, redisProvider types.RedisProvider) ApiThirdParty {
+func New(appId, appSecret string, redisProvider types.RedisProvider) API {
 	return &thirdPartyApiImpl{
 		Api:   api.New(appId, appSecret, redisProvider),
 		WxApi: wx.New(appId, appSecret),

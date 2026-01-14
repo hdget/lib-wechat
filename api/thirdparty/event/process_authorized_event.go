@@ -10,18 +10,17 @@ type xmlAuthAuthorizedEvent struct {
 	AuthorizationCodeExpiredTime int    `xml:"AuthorizationCodeExpiredTime"`
 }
 
-type authorizedEventHandler struct {
+type authorizedEventProcessor struct {
 }
 
-func newAuthorizedEventHandler() Handler {
-	return &authorizedEventHandler{}
+func newAuthorizedEventProcessor() PreProcessor {
+	return &authorizedEventProcessor{}
 }
 
-func (h authorizedEventHandler) Handle(data []byte) (string, error) {
+func (h authorizedEventProcessor) Process(data []byte) (string, error) {
 	var e xmlAuthAuthorizedEvent
 	if err := xml.Unmarshal(data, &e); err != nil {
 		return "", err
 	}
-
 	return e.AuthorizationCode, nil
 }

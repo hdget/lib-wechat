@@ -5,7 +5,7 @@ import (
 	"github.com/hdget/lib-wechat/api/openplatform/wx"
 )
 
-type ApiOpenPlatform interface {
+type API interface {
 	api.Api
 	WebAppLogin(code string) (string, string, error) // 网站应用快速扫码登录
 }
@@ -15,7 +15,7 @@ type openPlatformApiImpl struct {
 	wx.WxApi
 }
 
-func New(appId, appSecret string) ApiOpenPlatform {
+func New(appId, appSecret string) API {
 	return &openPlatformApiImpl{
 		Api:   api.New(appId, appSecret),
 		WxApi: wx.New(appId, appSecret),

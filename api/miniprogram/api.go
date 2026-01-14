@@ -7,7 +7,7 @@ import (
 	"github.com/hdget/lib-wechat/api/miniprogram/wx"
 )
 
-type ApiMiniProgram interface {
+type API interface {
 	api.Api
 	Login(code string) (string, string, error)                                         // 小程序静默登录，通过code换取UnionId
 	GetUserPhoneNumber(accessToken, code string) (string, error)                       // 获取用户手机号码
@@ -21,7 +21,7 @@ type miniProgramApiImpl struct {
 	redisProvider types.RedisProvider
 }
 
-func New(appId, appSecret string, redisProvider types.RedisProvider) ApiMiniProgram {
+func New(appId, appSecret string, redisProvider types.RedisProvider) API {
 	return &miniProgramApiImpl{
 		Api:           api.New(appId, appSecret),
 		WxApi:         wx.New(appId, appSecret),

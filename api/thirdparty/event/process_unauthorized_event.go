@@ -8,14 +8,14 @@ type xmlUnauthorizedEvent struct {
 	AuthorizerAppid string `xml:"AuthorizerAppid"`
 }
 
-type unauthorizedEventHandler struct {
+type unauthorizedEventProcessor struct {
 }
 
-func newUnauthorizedEventHandler() Handler {
-	return &unauthorizedEventHandler{}
+func newUnauthorizedEventProcessor() PreProcessor {
+	return &unauthorizedEventProcessor{}
 }
 
-func (h unauthorizedEventHandler) Handle(data []byte) (string, error) {
+func (h unauthorizedEventProcessor) Process(data []byte) (string, error) {
 	var e xmlUnauthorizedEvent
 	if err := xml.Unmarshal(data, &e); err != nil {
 		return "", err

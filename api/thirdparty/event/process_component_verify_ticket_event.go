@@ -12,16 +12,16 @@ type xmlComponentVerifyTicketEvent struct {
 	ComponentVerifyTicket string `xml:"ComponentVerifyTicket"`
 }
 
-type componentVerifyTicketEventHandler struct {
+type componentVerifyTicketEventProcessor struct {
 	appId         string
 	redisProvider types.RedisProvider
 }
 
-func newComponentVerifyTicketEventHandler() Handler {
-	return &componentVerifyTicketEventHandler{}
+func newComponentVerifyTicketEventProcessor() PreProcessor {
+	return &componentVerifyTicketEventProcessor{}
 }
 
-func (h componentVerifyTicketEventHandler) Handle(data []byte) (string, error) {
+func (h componentVerifyTicketEventProcessor) Process(data []byte) (string, error) {
 	var e xmlComponentVerifyTicketEvent
 	if err := xml.Unmarshal(data, &e); err != nil {
 		return "", err

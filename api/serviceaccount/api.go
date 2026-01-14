@@ -13,8 +13,8 @@ import (
 	"github.com/pkg/errors"
 )
 
-// ApiServiceAccount 服务号
-type ApiServiceAccount interface {
+// API 服务号
+type API interface {
 	api.Api
 	VerifyServer(token, signature, timestamp, nonce, echostr string) (string, error) // 校验服务号服务器
 	HandleMessage(data []byte) ([]byte, error)                                       // 接收普通/事件消息以及被动回复消息
@@ -26,7 +26,7 @@ type serviceAccountApiImpl struct {
 	wx.WxApi
 }
 
-func New(appId, appSecret string, redisProvider types.RedisProvider) ApiServiceAccount {
+func New(appId, appSecret string, redisProvider types.RedisProvider) API {
 	return &serviceAccountApiImpl{
 		Api:   api.New(appId, appSecret, redisProvider),
 		WxApi: wx.New(appId, appSecret),

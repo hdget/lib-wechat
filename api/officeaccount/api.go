@@ -5,7 +5,7 @@ import (
 	"github.com/hdget/lib-wechat/api/officeaccount/wx"
 )
 
-type ApiOfficeAccount interface {
+type API interface {
 	api.Api
 	GetJsSdkSignature(ticket, url string) (*wx.GetJsSdkSignatureResult, error)
 	GetJsSdkTicket(accessToken string) (*wx.GetJsSdkTicketResult, error)
@@ -16,7 +16,7 @@ type officeAccountApiImpl struct {
 	wx.WxApi
 }
 
-func New(appId, appSecret string) ApiOfficeAccount {
+func New(appId, appSecret string) API {
 	return &officeAccountApiImpl{
 		Api:   api.New(appId, appSecret),
 		WxApi: wx.New(appId, appSecret),
