@@ -11,14 +11,14 @@ type AppEventKind string
 type AppEventHandler func() error
 
 type AppEvent interface {
-	RegisterHandler(kind AuthEventKind, handler AppEventHandler)
+	RegisterHandler(kind AppEventKind, handler AppEventHandler)
 	Handle() error
 }
 
 type appEventImpl struct {
-	kind     AuthEventKind
+	kind     AppEventKind
 	data     []byte
-	handlers map[AuthEventKind]AppEventHandler
+	handlers map[AppEventKind]AppEventHandler
 }
 
 type xmlAppEvent struct {
@@ -44,12 +44,12 @@ func NewAppEvent(appId, token, encodingAESKey string, message *Message) (AppEven
 
 	return &appEventImpl{
 		data:     data,
-		handlers: make(map[AuthEventKind]AppEventHandler),
+		handlers: make(map[AppEventKind]AppEventHandler),
 	}, nil
 }
 
 // RegisterHandler 注册代运营APP事件处理Handler
-func (impl appEventImpl) RegisterHandler(kind AuthEventKind, handler AppEventHandler) {
+func (impl appEventImpl) RegisterHandler(kind AppEventKind, handler AppEventHandler) {
 	impl.handlers[kind] = handler
 }
 
