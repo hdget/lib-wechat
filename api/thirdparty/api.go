@@ -14,7 +14,7 @@ import (
 )
 
 type API interface {
-	api.Api
+	api.API
 	GetAuthUrl(client, redirectUrl string, authType int) (string, error) // 获取授权链接
 	GetAuthorizerAppId(authCode string) (string, error)                  // 通过authCode获取授权应用的appId
 	GetAuthorizerInfo(appId string) (*wx.GetAuthorizerInfoResult, error) // 获取授权应用的信息
@@ -22,7 +22,7 @@ type API interface {
 }
 
 type thirdPartyApiImpl struct {
-	api.Api
+	api.API
 	wx.WxApi
 	redisProvider types.RedisProvider
 }
@@ -34,7 +34,7 @@ const (
 
 func New(appId, appSecret string, redisProvider types.RedisProvider) API {
 	return &thirdPartyApiImpl{
-		Api:   api.New(appId, appSecret, redisProvider),
+		API:   api.New(appId, appSecret, redisProvider),
 		WxApi: wx.New(appId, appSecret),
 	}
 }

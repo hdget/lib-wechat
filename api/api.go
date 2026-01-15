@@ -9,7 +9,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-type Api interface {
+type API interface {
 	GetAccessToken() (string, error)
 	GetAppId() string
 	GetAppSecret() string
@@ -27,7 +27,7 @@ const (
 	urlGetAccessToken   = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=%s&secret=%s"
 )
 
-func New(appId, appSecret string, redisProvider ...types.RedisProvider) Api {
+func New(appId, appSecret string, redisProvider ...types.RedisProvider) API {
 	var redis types.RedisProvider
 	if len(redisProvider) > 0 {
 		redis = redisProvider[0]

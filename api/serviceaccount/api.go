@@ -15,20 +15,20 @@ import (
 
 // API 服务号
 type API interface {
-	api.Api
+	api.API
 	VerifyServer(token, signature, timestamp, nonce, echostr string) (string, error) // 校验服务号服务器
 	HandleMessage(data []byte) ([]byte, error)                                       // 接收普通/事件消息以及被动回复消息
 	SendTemplateMessage(msg *wx.TemplateMessage) error                               // 发送模板消息
 }
 
 type serviceAccountApiImpl struct {
-	api.Api
+	api.API
 	wx.WxApi
 }
 
 func New(appId, appSecret string, redisProvider types.RedisProvider) API {
 	return &serviceAccountApiImpl{
-		Api:   api.New(appId, appSecret, redisProvider),
+		API:   api.New(appId, appSecret, redisProvider),
 		WxApi: wx.New(appId, appSecret),
 	}
 }

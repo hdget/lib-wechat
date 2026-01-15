@@ -6,19 +6,19 @@ import (
 )
 
 type API interface {
-	api.Api
+	api.API
 	GetJsSdkSignature(ticket, url string) (*wx.GetJsSdkSignatureResult, error)
 	GetJsSdkTicket(accessToken string) (*wx.GetJsSdkTicketResult, error)
 }
 
 type officeAccountApiImpl struct {
-	api.Api
+	api.API
 	wx.WxApi
 }
 
 func New(appId, appSecret string) API {
 	return &officeAccountApiImpl{
-		Api:   api.New(appId, appSecret),
+		API:   api.New(appId, appSecret),
 		WxApi: wx.New(appId, appSecret),
 	}
 }

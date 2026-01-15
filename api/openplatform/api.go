@@ -6,18 +6,18 @@ import (
 )
 
 type API interface {
-	api.Api
+	api.API
 	WebAppLogin(code string) (string, string, error) // 网站应用快速扫码登录
 }
 
 type openPlatformApiImpl struct {
-	api.Api
+	api.API
 	wx.WxApi
 }
 
 func New(appId, appSecret string) API {
 	return &openPlatformApiImpl{
-		Api:   api.New(appId, appSecret),
+		API:   api.New(appId, appSecret),
 		WxApi: wx.New(appId, appSecret),
 	}
 }

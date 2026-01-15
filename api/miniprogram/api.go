@@ -8,7 +8,7 @@ import (
 )
 
 type API interface {
-	api.Api
+	api.API
 	Login(code string) (string, string, error)                                         // 小程序静默登录，通过code换取UnionId
 	GetUserPhoneNumber(accessToken, code string) (string, error)                       // 获取用户手机号码
 	CreateLimitedWxaCode(accessToken, path string, width int) ([]byte, error)          // 生成有限的小程序码
@@ -16,14 +16,14 @@ type API interface {
 }
 
 type miniProgramApiImpl struct {
-	api.Api
+	api.API
 	wx.WxApi
 	redisProvider types.RedisProvider
 }
 
 func New(appId, appSecret string, redisProvider types.RedisProvider) API {
 	return &miniProgramApiImpl{
-		Api:           api.New(appId, appSecret),
+		API:           api.New(appId, appSecret),
 		WxApi:         wx.New(appId, appSecret),
 		redisProvider: redisProvider,
 	}
