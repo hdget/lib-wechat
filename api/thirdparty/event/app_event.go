@@ -10,11 +10,6 @@ type AppEventKind string
 
 type AppEventHandler func() error
 
-type AppEvent interface {
-	RegisterHandler(kind AppEventKind, handler AppEventHandler)
-	Handle() error
-}
-
 type appEventImpl struct {
 	kind     AppEventKind
 	data     []byte
@@ -26,7 +21,11 @@ type xmlAppEvent struct {
 	Encrypt    string `xml:"Encrypt"`
 }
 
-func NewAppEvent(appId, token, encodingAESKey string, message *Message) (AppEvent, error) {
+var (
+	_appEventHandlers = map[AppEventKind]AppEventHandler{}
+)
+
+func NewAppEvent(appId, token, encodingAESKey string, message *Message) (Event, error) {
 	msgCrypt, err := crypt.NewBizMsgCrypt(appId, token, encodingAESKey)
 	if err != nil {
 		return nil, err
@@ -48,13 +47,13 @@ func NewAppEvent(appId, token, encodingAESKey string, message *Message) (AppEven
 	}, nil
 }
 
-// RegisterHandler 注册代运营APP事件处理Handler
-func (impl appEventImpl) RegisterHandler(kind AppEventKind, handler AppEventHandler) {
-	impl.handlers[kind] = handler
+// RegisterAppEventHandler 注册代运营APP事件处理Handler
+func RegisterAppEventHandler(kind AppEventKind, handler AppEventHandler) {
+	_appEventHandlers[kind] = handler
 }
 
 func (impl appEventImpl) Handle() error {
-	if handler, ok := impl.handlers[impl.kind]; ok {
+	if handler, ok := _appEventHandlers[impl.kind]; ok {
 		if err := handler(); err != nil {
 			return err
 		}

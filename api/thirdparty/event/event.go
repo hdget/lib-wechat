@@ -7,3 +7,7 @@ type Message struct {
 	Nonce     string
 	Body      string
 }
+
+type Event interface {
+	Handle() error
+}

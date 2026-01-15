@@ -19,23 +19,21 @@ const (
 
 type AuthEventHandler func(string) error // 处理事件
 
-type AuthEvent interface {
-	RegisterHandler(kind AuthEventKind, handler AuthEventHandler)
-	Handle() error
-}
-
 type authEventImpl struct {
-	kind     AuthEventKind
-	data     []byte
-	handlers map[AuthEventKind]AuthEventHandler
+	kind AuthEventKind
+	data []byte
 }
 
 type xmlAuthEvent struct {
 	InfoType string `xml:"InfoType"`
 }
 
+var (
+	_authEventHandlers = map[AuthEventKind]AuthEventHandler{}
+)
+
 // NewAuthEvent 创建授权事件
-func NewAuthEvent(appId, token, encodingAESKey string, message *Message) (AuthEvent, error) {
+func NewAuthEvent(appId, token, encodingAESKey string, message *Message) (Event, error) {
 	msgCrypt, err := crypt.NewBizMsgCrypt(appId, token, encodingAESKey)
 	if err != nil {
 		return nil, err
@@ -52,14 +50,13 @@ func NewAuthEvent(appId, token, encodingAESKey string, message *Message) (AuthEv
 	}
 
 	return &authEventImpl{
-		kind:     AuthEventKind(strings.ToLower(evt.InfoType)),
-		data:     data,
-		handlers: make(map[AuthEventKind]AuthEventHandler),
+		kind: AuthEventKind(strings.ToLower(evt.InfoType)),
+		data: data,
 	}, nil
 }
 
-func (impl authEventImpl) RegisterHandler(kind AuthEventKind, handler AuthEventHandler) {
-	impl.handlers[kind] = handler
+func RegisterAuthEventHandler(kind AuthEventKind, handler AuthEventHandler) {
+	_authEventHandlers[kind] = handler
 }
 
 func (impl authEventImpl) Handle() error {
@@ -72,7 +69,7 @@ func (impl authEventImpl) Handle() error {
 		}
 	}
 
-	handler, exists := impl.handlers[impl.kind]
+	handler, exists := _authEventHandlers[impl.kind]
 	if !exists {
 		return errors.Wrapf(err, "handler not exists, kind: %s", impl.kind)
 	}
