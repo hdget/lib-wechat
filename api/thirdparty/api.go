@@ -7,7 +7,6 @@ import (
 	"github.com/hdget/common/types"
 	"github.com/hdget/lib-wechat/api"
 	"github.com/hdget/lib-wechat/api/thirdparty/cache"
-	"github.com/hdget/lib-wechat/api/thirdparty/event"
 	"github.com/hdget/lib-wechat/api/thirdparty/wx"
 	"github.com/pkg/errors"
 	"github.com/spf13/cast"
@@ -19,6 +18,7 @@ type API interface {
 	GetAuthorizerAppId(authCode string) (string, error)                  // 通过authCode获取授权应用的appId
 	GetAuthorizerInfo(appId string) (*wx.GetAuthorizerInfoResult, error) // 获取授权应用的信息
 	GetAuthorizerAccessToken(authorizerAppid string) (string, error)     // 获取授权的应用的AccessToken
+	UpdateComponentVerifyTicket(componentVerifyTicket string) error      // 更新ComponentVerityTicket
 }
 
 type thirdPartyApiImpl struct {
@@ -33,11 +33,6 @@ const (
 )
 
 func New(appId, appSecret string, redisProvider types.RedisProvider) API {
-	// 注册默认的事件处理Handler
-	event.RegisterAuthEventHandler(event.AuthEventKindComponentVerifyTicket, func(componentVerifyTicket string) error {
-		return cache.ComponentVerifyTicket(appId, redisProvider).Set(componentVerifyTicket)
-	})
-
 	return &thirdPartyApiImpl{
 		API:           api.New(appId, appSecret, redisProvider),
 		WxAPI:         wx.New(appId, appSecret),
@@ -45,6 +40,12 @@ func New(appId, appSecret string, redisProvider types.RedisProvider) API {
 	}
 }
 
+// UpdateComponentVerifyTicket 更新ComponentVerifyTicket
+func (impl thirdPartyApiImpl) UpdateComponentVerifyTicket(componentVerifyTicket string) error {
+	return cache.ComponentVerifyTicket(impl.GetAppId(), impl.redisProvider).Set(componentVerifyTicket)
+}
+
+// GetAuthUrl 获取授权URL
 func (impl thirdPartyApiImpl) GetAuthUrl(client, redirectUrl string, authType int) (string, error) {
 	componentAccessToken, err := impl.getComponentAccessToken()
 	if err != nil {
@@ -78,6 +79,7 @@ func (impl thirdPartyApiImpl) GetAuthUrl(client, redirectUrl string, authType in
 	}
 }
 
+// GetAuthorizerAppId 通过授权码获取授权AppId
 func (impl thirdPartyApiImpl) GetAuthorizerAppId(authCode string) (string, error) {
 	if authCode == "" {
 		return "", errors.New("empty auth code")
@@ -108,6 +110,7 @@ func (impl thirdPartyApiImpl) GetAuthorizerAppId(authCode string) (string, error
 	return authorizationInfo.AuthorizerAppid, nil
 }
 
+// GetAuthorizerInfo 获取授权应用的信息
 func (impl thirdPartyApiImpl) GetAuthorizerInfo(appId string) (*wx.GetAuthorizerInfoResult, error) {
 	componentAccessToken, err := impl.getComponentAccessToken()
 	if err != nil {
@@ -122,6 +125,7 @@ func (impl thirdPartyApiImpl) GetAuthorizerInfo(appId string) (*wx.GetAuthorizer
 	return authorizerInfo, nil
 }
 
+// GetAuthorizerAccessToken 获取授权应用访问accessToken
 func (impl thirdPartyApiImpl) GetAuthorizerAccessToken(authorizerAppid string) (string, error) {
 	return api.CacheFirst(
 		cache.AuthorizerAccessToken(impl.GetAppId(), impl.redisProvider, authorizerAppid), // cache
