@@ -3,11 +3,11 @@ package thirdparty
 import (
 	"fmt"
 	"strings"
-	"time"
 
 	"github.com/hdget/common/types"
 	"github.com/hdget/lib-wechat/api"
 	"github.com/hdget/lib-wechat/api/thirdparty/cache"
+	"github.com/hdget/lib-wechat/api/thirdparty/event"
 	"github.com/hdget/lib-wechat/api/thirdparty/wx"
 	"github.com/pkg/errors"
 	"github.com/spf13/cast"
@@ -33,6 +33,11 @@ const (
 )
 
 func New(appId, appSecret string, redisProvider types.RedisProvider) API {
+	// 注册默认的事件处理Handler
+	event.RegisterAuthEventHandler(event.AuthEventKindComponentVerifyTicket, func(componentVerifyTicket string) error {
+		return cache.ComponentVerifyTicket(appId, redisProvider).Set(componentVerifyTicket)
+	})
+
 	return &thirdPartyApiImpl{
 		API:           api.New(appId, appSecret, redisProvider),
 		WxAPI:         wx.New(appId, appSecret),
@@ -163,14 +168,10 @@ func (impl thirdPartyApiImpl) getComponentVerifyTicket() (string, error) {
 
 	componentVerifyTicket, _ := cvtCache.Get()
 	if componentVerifyTicket == "" {
-		// 如果缓存里面没有component verify ticket, 尝试重新推送ticket
+		// 如果缓存里面没有component verify ticket, 尝试重新推送ticket,一般要10分钟以后才会收到
 		if err := wx.New(impl.GetAppId(), impl.GetAppSecret()).StartPushComponentVerifyTicket(); err != nil {
 			return "", errors.Wrap(err, "start push component verify ticket")
 		}
-
-		// 等待3秒后重新获取
-		time.Sleep(3 * time.Second)
-		componentVerifyTicket, _ = cvtCache.Get()
 	}
 	return componentVerifyTicket, nil
 }
