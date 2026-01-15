@@ -68,13 +68,13 @@ func (impl authEventImpl) Handle() error {
 	if p, exists := _preProcessors[impl.kind]; exists {
 		processedResult, err = p.Process(impl.data)
 		if err != nil {
-			return errors.Wrapf(err, "pre process event, AuthEventKind: %s, data: %s", impl.kind, string(impl.data))
+			return errors.Wrapf(err, "pre process event, kind: %s, data: %s", impl.kind, string(impl.data))
 		}
 	}
 
 	handler, exists := impl.handlers[impl.kind]
 	if !exists {
-		return errors.Wrapf(err, "handler not exists, AuthEventKind: %s", impl.kind)
+		return errors.Wrapf(err, "handler not exists, kind: %s", impl.kind)
 	}
 
 	if err = handler(processedResult); err != nil {
