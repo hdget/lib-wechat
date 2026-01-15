@@ -36,20 +36,20 @@ type PreProcessor interface {
 	Process(data []byte) (string, error)
 }
 
-type authEventImpl struct {
+type AuthEventImpl struct {
 	kind AuthEventKind
 	data []byte
 }
 
 var (
 	// 授权事件预处理器
-	_authEventPreProcessors = map[AuthEventKind]PreProcessor{
+	AuthEventPreProcessors = map[AuthEventKind]PreProcessor{
 		AuthEventKindComponentVerifyTicket: newComponentVerifyTicketEventProcessor(),
 		AuthEventKindAuthorized:            newAuthorizedEventProcessor(),
 		AuthEventKindUnauthorized:          newUnauthorizedEventProcessor(),
 		AuthEventKindUpdateAuthorized:      newAuthorizedEventProcessor(),
 	}
-	_authEventHandlers = map[AuthEventKind]AuthEventHandler{}
+	AuthEventHandlers = map[AuthEventKind]AuthEventHandler{}
 )
 
 type xmlAuthEvent struct {
@@ -73,7 +73,7 @@ func NewAuthEvent(appId, token, encodingAESKey string, message *Message) (Event,
 		return nil, err
 	}
 
-	return &authEventImpl{
+	return &AuthEventImpl{
 		kind: AuthEventKind(strings.ToLower(evt.InfoType)),
 		data: data,
 	}, nil
@@ -81,22 +81,22 @@ func NewAuthEvent(appId, token, encodingAESKey string, message *Message) (Event,
 
 // RegisterAuthEventHandler 注册授权事件处理Handler
 func RegisterAuthEventHandler(kind AuthEventKind, handler AuthEventHandler) {
-	_authEventHandlers[kind] = handler
+	AuthEventHandlers[kind] = handler
 }
 
-func (impl authEventImpl) Handle() error {
+func (impl AuthEventImpl) Handle() error {
 	var result string
 	var err error
-	if preProcessor, exists := _authEventPreProcessors[impl.kind]; exists {
+	if preProcessor, exists := AuthEventPreProcessors[impl.kind]; exists {
 		result, err = preProcessor.Process(impl.data)
 		if err != nil {
 			return errors.Wrapf(err, "pre process event, kind: %s, data: %s", impl.kind, string(impl.data))
 		}
 	}
 
-	handler, exists := _authEventHandlers[impl.kind]
+	handler, exists := AuthEventHandlers[impl.kind]
 	if !exists {
-		return errors.Wrapf(err, "handler not exists, kind: %s, handlers: %v", impl.kind, _authEventHandlers)
+		return errors.Wrapf(err, "handler not exists, kind: %s, handlers: %v", impl.kind, AuthEventHandlers)
 	}
 
 	if err = handler(result); err != nil {
