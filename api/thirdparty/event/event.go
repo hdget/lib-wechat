@@ -1,4 +1,4 @@
-package authevent
+package event
 
 // Message 接收到的消息
 type Message struct {

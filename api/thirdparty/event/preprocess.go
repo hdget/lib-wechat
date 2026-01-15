@@ -1,4 +1,4 @@
-package authevent
+package event
 
 // PreProcessor 预处理器，对消息进行预处理
 type PreProcessor interface {

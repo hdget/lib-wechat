@@ -1,4 +1,4 @@
-package authevent
+package event
 
 import (
 	"encoding/xml"
