@@ -1,4 +1,4 @@
-package event
+package authevent
 
 import (
 	"encoding/xml"
@@ -17,47 +17,25 @@ const (
 	AuthEventKindUnauthorized          AuthEventKind = "unauthorized"            // 取消授权
 )
 
-type Event interface {
+type AuthEventHandler func(string) error // 处理事件
+
+type AuthEvent interface {
+	RegisterHandler(kind AuthEventKind, handler AuthEventHandler)
 	Handle() error
 }
 
-// Message 接收到的消息
-type Message struct {
-	Signature string
-	Timestamp string
-	Nonce     string
-	Body      string
+type authEventImpl struct {
+	kind     AuthEventKind
+	data     []byte
+	handlers map[AuthEventKind]AuthEventHandler
 }
-
-type AuthEventHandler func(string) error // 处理事件
-
-// PreProcessor 预处理器，对消息进行预处理
-type PreProcessor interface {
-	Process(data []byte) (string, error)
-}
-
-type AuthEventImpl struct {
-	kind AuthEventKind
-	data []byte
-}
-
-var (
-	// 授权事件预处理器
-	AuthEventPreProcessors = map[AuthEventKind]PreProcessor{
-		AuthEventKindComponentVerifyTicket: newComponentVerifyTicketEventProcessor(),
-		AuthEventKindAuthorized:            newAuthorizedEventProcessor(),
-		AuthEventKindUnauthorized:          newUnauthorizedEventProcessor(),
-		AuthEventKindUpdateAuthorized:      newAuthorizedEventProcessor(),
-	}
-	AuthEventHandlers = map[AuthEventKind]AuthEventHandler{}
-)
 
 type xmlAuthEvent struct {
 	InfoType string `xml:"InfoType"`
 }
 
 // NewAuthEvent 创建授权事件
-func NewAuthEvent(appId, token, encodingAESKey string, message *Message) (Event, error) {
+func NewAuthEvent(appId, token, encodingAESKey string, message *Message) (AuthEvent, error) {
 	msgCrypt, err := crypt.NewBizMsgCrypt(appId, token, encodingAESKey)
 	if err != nil {
 		return nil, err
@@ -73,34 +51,34 @@ func NewAuthEvent(appId, token, encodingAESKey string, message *Message) (Event,
 		return nil, err
 	}
 
-	return &AuthEventImpl{
-		kind: AuthEventKind(strings.ToLower(evt.InfoType)),
-		data: data,
+	return &authEventImpl{
+		kind:     AuthEventKind(strings.ToLower(evt.InfoType)),
+		data:     data,
+		handlers: make(map[AuthEventKind]AuthEventHandler),
 	}, nil
 }
 
-// RegisterAuthEventHandler 注册授权事件处理Handler
-func RegisterAuthEventHandler(kind AuthEventKind, handler AuthEventHandler) {
-	AuthEventHandlers[kind] = handler
+func (impl authEventImpl) RegisterHandler(kind AuthEventKind, handler AuthEventHandler) {
+	impl.handlers[kind] = handler
 }
 
-func (impl AuthEventImpl) Handle() error {
-	var result string
+func (impl authEventImpl) Handle() error {
 	var err error
-	if preProcessor, exists := AuthEventPreProcessors[impl.kind]; exists {
-		result, err = preProcessor.Process(impl.data)
+	var processedResult string
+	if p, exists := _preProcessors[impl.kind]; exists {
+		processedResult, err = p.Process(impl.data)
 		if err != nil {
-			return errors.Wrapf(err, "pre process event, kind: %s, data: %s", impl.kind, string(impl.data))
+			return errors.Wrapf(err, "pre process event, AuthEventKind: %s, data: %s", impl.kind, string(impl.data))
 		}
 	}
 
-	handler, exists := AuthEventHandlers[impl.kind]
+	handler, exists := impl.handlers[impl.kind]
 	if !exists {
-		return errors.Wrapf(err, "handler not exists, kind: %s, handlers: %v", impl.kind, AuthEventHandlers)
+		return errors.Wrapf(err, "handler not exists, AuthEventKind: %s", impl.kind)
 	}
 
-	if err = handler(result); err != nil {
-		return errors.Wrapf(err, "handle event, kind: %s, result: %s", impl.kind, result)
+	if err = handler(processedResult); err != nil {
+		return errors.Wrapf(err, "handle authEventImpl, kind: %s, processed result: %s", impl.kind, processedResult)
 	}
 
 	return nil
