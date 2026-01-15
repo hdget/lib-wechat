@@ -24,6 +24,10 @@ const (
 )
 
 func (impl wxApiImpl) GetComponentAccessToken(componentVerifyTicket string) (string, int, error) {
+	if componentVerifyTicket == "" {
+		return "", 0, errors.New("component_verify_ticket is empty, please wait at least 10 minutes")
+	}
+
 	req := &getComponentAccessTokenRequest{
 		ComponentAppid:        impl.appId,
 		ComponentAppsecret:    impl.appSecret,
@@ -36,7 +40,7 @@ func (impl wxApiImpl) GetComponentAccessToken(componentVerifyTicket string) (str
 	}
 
 	if err = api.CheckResult(ret.Result, urlGetComponentAccessToken, req); err != nil {
-		return "", 0, errors.Wrap(err, "get component access token")
+		return "", 0, errors.Wrap(err, "check get component access token result")
 	}
 
 	if ret.ComponentAccessToken == "" {

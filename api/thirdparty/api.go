@@ -3,7 +3,6 @@ package thirdparty
 import (
 	"fmt"
 	"strings"
-	"time"
 
 	"github.com/hdget/common/types"
 	"github.com/hdget/lib-wechat/api"
@@ -19,6 +18,7 @@ type API interface {
 	GetAuthorizerAppId(authCode string) (string, error)                  // 通过authCode获取授权应用的appId
 	GetAuthorizerInfo(appId string) (*wx.GetAuthorizerInfoResult, error) // 获取授权应用的信息
 	GetAuthorizerAccessToken(authorizerAppid string) (string, error)     // 获取授权的应用的AccessToken
+	UpdateComponentVerifyTicket(componentVerifyTicket string) error      // 更新ComponentVerityTicket
 }
 
 type thirdPartyApiImpl struct {
@@ -40,6 +40,12 @@ func New(appId, appSecret string, redisProvider types.RedisProvider) API {
 	}
 }
 
+// UpdateComponentVerifyTicket 更新ComponentVerifyTicket
+func (impl thirdPartyApiImpl) UpdateComponentVerifyTicket(componentVerifyTicket string) error {
+	return cache.ComponentVerifyTicket(impl.GetAppId(), impl.redisProvider).Set(componentVerifyTicket)
+}
+
+// GetAuthUrl 获取授权URL
 func (impl thirdPartyApiImpl) GetAuthUrl(client, redirectUrl string, authType int) (string, error) {
 	componentAccessToken, err := impl.getComponentAccessToken()
 	if err != nil {
@@ -73,6 +79,7 @@ func (impl thirdPartyApiImpl) GetAuthUrl(client, redirectUrl string, authType in
 	}
 }
 
+// GetAuthorizerAppId 通过授权码获取授权AppId
 func (impl thirdPartyApiImpl) GetAuthorizerAppId(authCode string) (string, error) {
 	if authCode == "" {
 		return "", errors.New("empty auth code")
@@ -103,6 +110,7 @@ func (impl thirdPartyApiImpl) GetAuthorizerAppId(authCode string) (string, error
 	return authorizationInfo.AuthorizerAppid, nil
 }
 
+// GetAuthorizerInfo 获取授权应用的信息
 func (impl thirdPartyApiImpl) GetAuthorizerInfo(appId string) (*wx.GetAuthorizerInfoResult, error) {
 	componentAccessToken, err := impl.getComponentAccessToken()
 	if err != nil {
@@ -117,6 +125,7 @@ func (impl thirdPartyApiImpl) GetAuthorizerInfo(appId string) (*wx.GetAuthorizer
 	return authorizerInfo, nil
 }
 
+// GetAuthorizerAccessToken 获取授权应用访问accessToken
 func (impl thirdPartyApiImpl) GetAuthorizerAccessToken(authorizerAppid string) (string, error) {
 	return api.CacheFirst(
 		cache.AuthorizerAccessToken(impl.GetAppId(), impl.redisProvider, authorizerAppid), // cache
@@ -163,14 +172,10 @@ func (impl thirdPartyApiImpl) getComponentVerifyTicket() (string, error) {
 
 	componentVerifyTicket, _ := cvtCache.Get()
 	if componentVerifyTicket == "" {
-		// 如果缓存里面没有component verify ticket, 尝试重新推送ticket
+		// 如果缓存里面没有component verify ticket, 尝试重新推送ticket,一般要10分钟以后才会收到
 		if err := wx.New(impl.GetAppId(), impl.GetAppSecret()).StartPushComponentVerifyTicket(); err != nil {
 			return "", errors.Wrap(err, "start push component verify ticket")
 		}
-
-		// 等待3秒后重新获取
-		time.Sleep(3 * time.Second)
-		componentVerifyTicket, _ = cvtCache.Get()
 	}
 	return componentVerifyTicket, nil
 }
