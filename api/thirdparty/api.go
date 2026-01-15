@@ -34,8 +34,9 @@ const (
 
 func New(appId, appSecret string, redisProvider types.RedisProvider) API {
 	return &thirdPartyApiImpl{
-		API:   api.New(appId, appSecret, redisProvider),
-		WxAPI: wx.New(appId, appSecret),
+		API:           api.New(appId, appSecret, redisProvider),
+		WxAPI:         wx.New(appId, appSecret),
+		redisProvider: redisProvider,
 	}
 }
 
