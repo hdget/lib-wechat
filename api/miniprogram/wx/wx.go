@@ -1,6 +1,6 @@
 package wx
 
-type WxApi interface {
+type WxAPI interface {
 	Code2Session(code string) (*Session, error)                                               // 小程序登录凭证校验， 通过code换取openid和unionid
 	CreateLimitedWxaCode(accessToken, path string, width int) ([]byte, error)                 // 创建有限小程序码
 	CreateUnlimitedWxaCode(accessToken string, scene, page string, width int) ([]byte, error) // 创建无限小程序码
@@ -12,7 +12,7 @@ type wxApiImpl struct {
 	appSecret string
 }
 
-func New(appId, appSecret string) WxApi {
+func New(appId, appSecret string) WxAPI {
 	return &wxApiImpl{
 		appId:     appId,
 		appSecret: appSecret,

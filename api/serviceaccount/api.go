@@ -23,13 +23,13 @@ type API interface {
 
 type serviceAccountApiImpl struct {
 	api.API
-	wx.WxApi
+	wx.WxAPI
 }
 
 func New(appId, appSecret string, redisProvider types.RedisProvider) API {
 	return &serviceAccountApiImpl{
 		API:   api.New(appId, appSecret, redisProvider),
-		WxApi: wx.New(appId, appSecret),
+		WxAPI: wx.New(appId, appSecret),
 	}
 }
 
@@ -39,7 +39,7 @@ func (impl *serviceAccountApiImpl) SendTemplateMessage(message *wx.TemplateMessa
 	if err != nil {
 		return err
 	}
-	return impl.WxApi.SendTemplateMessage(accessToken, message)
+	return impl.WxAPI.SendTemplateMessage(accessToken, message)
 }
 
 // VerifyServer 服务号接入时校验

@@ -17,20 +17,20 @@ type API interface {
 
 type miniProgramApiImpl struct {
 	api.API
-	wx.WxApi
+	wx.WxAPI
 	redisProvider types.RedisProvider
 }
 
 func New(appId, appSecret string, redisProvider types.RedisProvider) API {
 	return &miniProgramApiImpl{
 		API:           api.New(appId, appSecret),
-		WxApi:         wx.New(appId, appSecret),
+		WxAPI:         wx.New(appId, appSecret),
 		redisProvider: redisProvider,
 	}
 }
 
 func (impl miniProgramApiImpl) Login(code string) (string, string, error) {
-	result, err := impl.WxApi.Code2Session(code)
+	result, err := impl.WxAPI.Code2Session(code)
 	if err != nil {
 		return "", "", err
 	}
@@ -45,13 +45,13 @@ func (impl miniProgramApiImpl) Login(code string) (string, string, error) {
 }
 
 func (impl miniProgramApiImpl) GetUserPhoneNumber(accessToken, code string) (string, error) {
-	return impl.WxApi.GetUserPhoneNumber(accessToken, code)
+	return impl.WxAPI.GetUserPhoneNumber(accessToken, code)
 }
 
 func (impl miniProgramApiImpl) CreateLimitedWxaCode(accessToken, path string, width int) ([]byte, error) {
-	return impl.WxApi.CreateLimitedWxaCode(accessToken, path, width)
+	return impl.WxAPI.CreateLimitedWxaCode(accessToken, path, width)
 }
 
 func (impl miniProgramApiImpl) CreateUnlimitedWxaCode(accessToken, scene, page string, width int) ([]byte, error) {
-	return impl.WxApi.CreateUnlimitedWxaCode(accessToken, scene, page, width)
+	return impl.WxAPI.CreateUnlimitedWxaCode(accessToken, scene, page, width)
 }

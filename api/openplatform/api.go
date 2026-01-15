@@ -12,16 +12,16 @@ type API interface {
 
 type openPlatformApiImpl struct {
 	api.API
-	wx.WxApi
+	wx.WxAPI
 }
 
 func New(appId, appSecret string) API {
 	return &openPlatformApiImpl{
 		API:   api.New(appId, appSecret),
-		WxApi: wx.New(appId, appSecret),
+		WxAPI: wx.New(appId, appSecret),
 	}
 }
 
 func (impl openPlatformApiImpl) WebAppLogin(code string) (string, string, error) {
-	return impl.WxApi.WebAppLogin(code)
+	return impl.WxAPI.WebAppLogin(code)
 }

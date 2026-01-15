@@ -23,7 +23,7 @@ type API interface {
 
 type thirdPartyApiImpl struct {
 	api.API
-	wx.WxApi
+	wx.WxAPI
 	redisProvider types.RedisProvider
 }
 
@@ -35,7 +35,7 @@ const (
 func New(appId, appSecret string, redisProvider types.RedisProvider) API {
 	return &thirdPartyApiImpl{
 		API:   api.New(appId, appSecret, redisProvider),
-		WxApi: wx.New(appId, appSecret),
+		WxAPI: wx.New(appId, appSecret),
 	}
 }
 
@@ -45,7 +45,7 @@ func (impl thirdPartyApiImpl) GetAuthUrl(client, redirectUrl string, authType in
 		return "", err
 	}
 
-	preAuthCode, _, err := impl.WxApi.CreatePreAuthCode(componentAccessToken)
+	preAuthCode, _, err := impl.WxAPI.CreatePreAuthCode(componentAccessToken)
 	if err != nil {
 		return "", err
 	}
@@ -83,7 +83,7 @@ func (impl thirdPartyApiImpl) GetAuthorizerAppId(authCode string) (string, error
 	}
 
 	// 每次查询一次, accessToken可能会发生变化，需要更新缓存
-	authorizationInfo, err := impl.WxApi.QueryAuthorizationInfo(componentAccessToken, authCode)
+	authorizationInfo, err := impl.WxAPI.QueryAuthorizationInfo(componentAccessToken, authCode)
 	if err != nil {
 		return "", errors.Wrap(err, "query authorization info")
 	}
@@ -108,7 +108,7 @@ func (impl thirdPartyApiImpl) GetAuthorizerInfo(appId string) (*wx.GetAuthorizer
 		return nil, err
 	}
 
-	authorizerInfo, err := impl.WxApi.GetAuthorizerInfo(componentAccessToken, appId)
+	authorizerInfo, err := impl.WxAPI.GetAuthorizerInfo(componentAccessToken, appId)
 	if err != nil {
 		return nil, errors.Wrap(err, "get authorizer info")
 	}
@@ -131,7 +131,7 @@ func (impl thirdPartyApiImpl) GetAuthorizerAccessToken(authorizerAppid string) (
 				return "", 0, err
 			}
 
-			return impl.WxApi.GetAuthorizerAccessToken(componentAccessToken, authorizerAppid, authorizerRefreshToken)
+			return impl.WxAPI.GetAuthorizerAccessToken(componentAccessToken, authorizerAppid, authorizerRefreshToken)
 		},
 	)
 }

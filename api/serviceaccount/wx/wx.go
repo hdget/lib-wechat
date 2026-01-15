@@ -1,6 +1,6 @@
 package wx
 
-type WxApi interface {
+type WxAPI interface {
 	SendTemplateMessage(accessToken string, msg *TemplateMessage) error // 发送模板消息
 }
 
@@ -9,7 +9,7 @@ type wxApiImpl struct {
 	appSecret string
 }
 
-func New(appId, appSecret string) WxApi {
+func New(appId, appSecret string) WxAPI {
 	return &wxApiImpl{
 		appId:     appId,
 		appSecret: appSecret,

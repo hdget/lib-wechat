@@ -13,20 +13,20 @@ type API interface {
 
 type officeAccountApiImpl struct {
 	api.API
-	wx.WxApi
+	wx.WxAPI
 }
 
 func New(appId, appSecret string) API {
 	return &officeAccountApiImpl{
 		API:   api.New(appId, appSecret),
-		WxApi: wx.New(appId, appSecret),
+		WxAPI: wx.New(appId, appSecret),
 	}
 }
 
 func (impl officeAccountApiImpl) GetJsSdkSignature(ticket, url string) (*wx.GetJsSdkSignatureResult, error) {
-	return impl.WxApi.GetJsSdkSignature(ticket, url)
+	return impl.WxAPI.GetJsSdkSignature(ticket, url)
 }
 
 func (impl officeAccountApiImpl) GetJsSdkTicket(accessToken string) (*wx.GetJsSdkTicketResult, error) {
-	return impl.WxApi.GetJsSdkTicket(accessToken)
+	return impl.WxAPI.GetJsSdkTicket(accessToken)
 }
