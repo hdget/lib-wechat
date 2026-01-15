@@ -8,7 +8,7 @@ import (
 )
 
 type UserInfoResult struct {
-	*api.Result
+	api.Result
 	Subscribe      int8   `json:"subscribe"`
 	Openid         string `json:"openid"`
 	Language       string `json:"language"`

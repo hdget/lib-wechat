@@ -14,7 +14,7 @@ type getAuthorizerAccessTokenRequest struct {
 }
 
 type GetAuthorizerAccessTokenResult struct {
-	*api.Result
+	api.Result
 	AuthorizerAccessToken  string `json:"authorizer_access_token"`
 	ExpiresIn              int    `json:"expires_in"`
 	AuthorizerRefreshToken string `json:"authorizer_refresh_token"`

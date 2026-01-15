@@ -32,26 +32,26 @@ func Get[RESULT any](url string, request ...any) (RESULT, error) {
 	return ret, nil
 }
 
-func Post[RESULT any](url string, request ...any) (*RESULT, error) {
+func Post[RESULT any](url string, request ...any) (RESULT, error) {
 	var req any
 	if len(request) > 0 {
 		req = request[0]
 	}
 
+	var ret RESULT
 	resp, err := resty.New().SetTimeout(networkTimeout).
 		SetHeader("Content-Type", "application/json; charset=UTF-8").
 		R().SetBody(req).Post(url)
 	if err != nil {
-		return nil, errors.Wrapf(err, "http post request, url: %s, req: %v", url, req)
+		return ret, errors.Wrapf(err, "http post request, url: %s, req: %v", url, req)
 	}
 
-	var ret RESULT
 	err = json.Unmarshal(resp.Body(), &ret)
 	if err != nil {
-		return nil, errors.Wrapf(err, "parse result, url: %s, req: %v, ret: %s", url, req, convert.BytesToString(resp.Body()))
+		return ret, errors.Wrapf(err, "parse result, url: %s, req: %v, ret: %s", url, req, convert.BytesToString(resp.Body()))
 	}
 
-	return &ret, nil
+	return ret, nil
 }
 
 // PostResponse http post and get response
@@ -68,13 +68,13 @@ func PostResponse(url string, request ...any) ([]byte, error) {
 	return resp.Body(), nil
 }
 
-func CheckResult(result *Result, url string, request ...any) error {
+func CheckResult(result Result, url string, request ...any) error {
 	var req any
 	if len(request) > 0 {
 		req = request[0]
 	}
 
-	if result != nil && result.ErrCode != 0 {
+	if result.ErrCode != 0 {
 		return fmt.Errorf("wx api error, url: %s, req: %v, ret: %v", url, req, result)
 	}
 

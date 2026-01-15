@@ -9,7 +9,7 @@ import (
 
 // GetJsSdkTicketResult 类型
 type GetJsSdkTicketResult struct {
-	*api.Result
+	api.Result
 	Value     string `json:"ticket,omitempty"`
 	ExpiresIn int    `json:"expires_in,omitempty"`
 }

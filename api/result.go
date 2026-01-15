@@ -6,7 +6,7 @@ type Result struct {
 }
 
 type AccessTokenResult struct {
-	*Result
+	Result
 	AccessToken string `json:"access_token"`
 	ExpiresIn   int    `json:"expires_in"`
 }

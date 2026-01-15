@@ -12,7 +12,7 @@ type createPreAuthCodeRequest struct {
 }
 
 type createPreAuthCodeResult struct {
-	*api.Result
+	api.Result
 	PreAuthCode string `json:"pre_auth_code"`
 	ExpiresIn   int    `json:"expires_in"`
 }

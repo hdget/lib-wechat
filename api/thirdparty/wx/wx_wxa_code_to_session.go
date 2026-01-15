@@ -8,7 +8,7 @@ import (
 )
 
 type WxaCode2SessionResult struct {
-	*api.Result
+	api.Result
 	SessionKey string `json:"session_key"`
 	OpenId     string `json:"openid"`
 	UnionId    string `json:"unionid"`
@@ -28,7 +28,7 @@ func (impl wxApiImpl) WxaCode2Session(componentAppId, componentAccessToken strin
 		code,
 	)
 
-	ret, err := api.Post[WxaCode2SessionResult](url)
+	ret, err := api.Post[*WxaCode2SessionResult](url)
 	if err != nil {
 		return nil, errors.Wrap(err, "wxa code to session")
 	}

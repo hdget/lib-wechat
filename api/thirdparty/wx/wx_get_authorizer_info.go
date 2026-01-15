@@ -13,7 +13,7 @@ type getAuthorizerInfoRequest struct {
 }
 
 type GetAuthorizerInfoResult struct {
-	*api.Result
+	api.Result
 	Authorizer    *AppInfo `json:"authorizer_info"`
 	Authorization struct {
 		AppId        string      `json:"authorizer_appid"`
@@ -91,7 +91,7 @@ func (impl wxApiImpl) GetAuthorizerInfo(componentAccessToken, authorizerAppid st
 
 	url := fmt.Sprintf(urlGetAuthorizerInfo, componentAccessToken)
 
-	ret, err := api.Post[GetAuthorizerInfoResult](url, req)
+	ret, err := api.Post[*GetAuthorizerInfoResult](url, req)
 	if err != nil {
 		return nil, errors.Wrap(err, "get authorizer info")
 	}

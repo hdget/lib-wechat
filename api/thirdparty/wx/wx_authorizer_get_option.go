@@ -18,7 +18,7 @@ type getAuthorizerOptionRequest struct {
 }
 
 type getAuthorizerOptionResult struct {
-	*api.Result
+	api.Result
 	OptionName  string `json:"option_name"`
 	OptionValue string `json:"option_value"`
 }

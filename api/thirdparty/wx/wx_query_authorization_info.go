@@ -13,7 +13,7 @@ type queryAuthorizationInfoRequest struct {
 }
 
 type queryAuthorizationInfoResult struct {
-	*api.Result
+	api.Result
 	AuthorizationInfo AuthorizationInfo `json:"authorization_info"`
 }
 

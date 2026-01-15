@@ -23,7 +23,7 @@ type TemplateMessage struct {
 }
 
 type sendTemplateMessageResult struct {
-	*api.Result
+	api.Result
 	Msgid int `json:"msgid"`
 }
 

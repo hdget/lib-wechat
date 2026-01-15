@@ -11,7 +11,7 @@ import (
 
 // GetJsSdkSignatureResult signature接口返回结果
 type GetJsSdkSignatureResult struct {
-	*api.Result
+	api.Result
 	AppID     string `json:"appId"`
 	Ticket    string `json:"ticket"`
 	Noncestr  string `json:"noncestr"`

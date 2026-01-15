@@ -12,7 +12,7 @@ type getUserPhoneNumberRequest struct {
 }
 
 type getUserPhoneNumberResult struct {
-	*api.Result
+	api.Result
 	PhoneInfo struct {
 		PhoneNumber     string `json:"phoneNumber"`
 		PurePhoneNumber string `json:"purePhoneNumber"`

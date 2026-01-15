@@ -12,7 +12,7 @@ type getComponentAccessTokenRequest struct {
 }
 
 type GetComponentAccessTokenResult struct {
-	*api.Result
+	api.Result
 	ComponentAccessToken string `json:"component_access_token"`
 	ExpiresIn            int    `json:"expires_in"`
 }

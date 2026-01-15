@@ -9,7 +9,7 @@ import (
 
 // Session wechat miniprogram login session
 type Session struct {
-	*api.Result
+	api.Result
 	SessionKey string `json:"session_key"`
 	OpenId     string `json:"openid"`
 	UnionId    string `json:"unionid"`
